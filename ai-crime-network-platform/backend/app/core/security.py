@@ -1,10 +1,10 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 
 from app.core.config import settings
 
-oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = HTTPBearer(auto_error=False)
 
 
 class CurrentUser:
@@ -13,19 +13,17 @@ class CurrentUser:
         self.role: str = role
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> CurrentUser:
-    credentials_exception: HTTPException = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid or expired token",
-    )
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme),
+) -> CurrentUser:
+    if credentials is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        payload: dict[str, object] = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        payload = jwt.decode(
+            credentials.credentials,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
         )
+        return CurrentUser(id=payload["sub"], role=payload.get("role", "investigator"))
     except JWTError:
-        raise credentials_exception from None
-    subject: object | None = payload.get("sub")
-    if subject is None:
-        raise credentials_exception
-    role: object = payload.get("role", "investigator")
-    return CurrentUser(id=str(subject), role=str(role))
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
