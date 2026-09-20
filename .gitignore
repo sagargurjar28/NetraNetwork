@@ -1,0 +1,18 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+smart-contracts/cache/
+smart-contracts/artifacts/
+!smart-contracts/artifacts/contracts/EvidenceLedger.sol/EvidenceLedger.json
+
+# Venvs
+.venv/
+venv/

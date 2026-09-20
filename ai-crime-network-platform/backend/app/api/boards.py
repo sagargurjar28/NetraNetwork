@@ -20,7 +20,7 @@ from app.schemas.board import (
     Suggestion,
 )
 
-router: APIRouter = APIRouter(tags=["boards"])
+router = APIRouter(prefix="/api", tags=["boards"])
 
 
 @router.post("/boards/", response_model=BoardRead, status_code=status.HTTP_201_CREATED)
