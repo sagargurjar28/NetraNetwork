@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import boards
+from app.api import auth, boards, cases, copilot, documents
 from app.core.config import Base, close_neo4j_driver, engine, get_neo4j_driver
+from app.models import audit as audit_models
 from app.models import board as board_models
+from app.models import case as case_models
+from app.models import conversation as conversation_models  # noqa: F401
+from app.models import document as document_models
+from app.models import user as user_models
 
 app: FastAPI = FastAPI(title="AI Crime Network Platform")
 
@@ -35,4 +40,8 @@ def on_shutdown() -> None:
     close_neo4j_driver()
 
 
+app.include_router(auth.router)
+app.include_router(cases.router)
+app.include_router(documents.router)
 app.include_router(boards.router)
+app.include_router(copilot.router)

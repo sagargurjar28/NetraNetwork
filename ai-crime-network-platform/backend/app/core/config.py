@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     CONTRACT_ABI_PATH: str = "../smart-contracts/artifacts/contracts/EvidenceLedger.sol/EvidenceLedger.json"
     PRIVATE_KEY: str = ""
     IPFS_API: str = "http://localhost:5001"
+    LLM_PROVIDER: str = "groq"
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    COPILOT_SERVICE_URL: str = "http://localhost:8001"
 
 
 settings: Settings = Settings()
