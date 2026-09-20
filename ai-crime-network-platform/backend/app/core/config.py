@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     NEO4J_URI: str = "bolt://localhost:7687"
     NEO4J_USER: str = "neo4j"
     NEO4J_PASSWORD: str = "password"
+    WEB3_PROVIDER: str = "http://127.0.0.1:8545"
+    CONTRACT_ADDRESS: str = ""
+    CONTRACT_ABI_PATH: str = "../smart-contracts/artifacts/contracts/EvidenceLedger.sol/EvidenceLedger.json"
+    PRIVATE_KEY: str = ""
+    IPFS_API: str = "http://localhost:5001"
 
 
 settings: Settings = Settings()
