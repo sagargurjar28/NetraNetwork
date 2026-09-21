@@ -7,11 +7,11 @@
 __pycache__/
 *.py[cod]
 
-# Node
+# Node / Hardhat
 node_modules/
-smart-contracts/cache/
-smart-contracts/artifacts/
-!smart-contracts/artifacts/contracts/EvidenceLedger.sol/EvidenceLedger.json
+ai-crime-network-platform/smart-contracts/cache/
+ai-crime-network-platform/smart-contracts/artifacts/
+
 
 # Venvs
 .venv/
