@@ -1,13 +1,16 @@
 import hashlib
+import io
 from datetime import datetime
 from typing import Any
 from uuid import UUID
 
+import requests
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from pydantic import BaseModel
+from pypdf import PdfReader
 from sqlalchemy.orm import Session
 
-from app.core.config import get_db
+from app.core.config import get_db, settings
 from app.core.rbac import require_permission
 from app.core.security import CurrentUser, get_current_user
 from app.models.case import Case
@@ -44,6 +47,33 @@ def upload_document(
     db.add(document)
     db.commit()
     db.refresh(document)
+    filename: str = file.filename or "unnamed"
+    extracted_text: str = ""
+    try:
+        if filename.lower().endswith(".pdf"):
+            reader: PdfReader = PdfReader(io.BytesIO(content))
+            extracted_text = "\n".join(
+                (page.extract_text() or "") for page in reader.pages
+            )
+        else:
+            extracted_text = content.decode("utf-8", errors="ignore")
+    except Exception:
+        extracted_text = ""
+
+    if extracted_text.strip():
+        try:
+            requests.post(
+                f"{settings.COPILOT_SERVICE_URL}/index-document",
+                json={
+                    "case_id": str(case_id),
+                    "document_id": str(document.id),
+                    "filename": filename,
+                    "text": extracted_text,
+                },
+                timeout=60,
+            )
+        except Exception:
+            pass  # never block upload on indexing failure
     created_at: datetime = document.created_at
     return {
         "id": str(document.id),

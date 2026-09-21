@@ -14,5 +14,8 @@ class Settings(BaseSettings):
 
     COPILOT_PORT: int = 8001
 
+    QDRANT_URL: str = "http://localhost:6333"
+    QDRANT_COLLECTION: str = "crime_docs"
+
 
 settings = Settings()

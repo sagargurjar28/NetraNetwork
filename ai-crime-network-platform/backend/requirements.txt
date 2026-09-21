@@ -11,3 +11,4 @@ passlib[bcrypt]
 bcrypt==4.0.1
 requests
 web3
+pypdf
