@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.core.prompts import SYSTEM_PROMPT, build_prompt
+from app.core.prompts import get_system_prompt, build_prompt
 from app.rag.generator import generate
 from app.rag.retriever import retrieve_context
 
@@ -19,6 +19,7 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     answer: str
     citations: list[dict] = []
+    intent: str = "general"
 
 
 @router.get("/health")
@@ -30,9 +31,11 @@ def health() -> dict[str, str]:
 def generate_response(payload: GenerateRequest) -> GenerateResponse:
     context: str
     citations: list[dict]
-    context, citations = retrieve_context(payload.board_id, payload.message)
+    intent: str
+    context, citations, intent = retrieve_context(payload.board_id, payload.message)
     if not context:
         context = "(No board context available.)"
     prompt: str = build_prompt(payload.message, context)
-    answer: str = generate(prompt, SYSTEM_PROMPT)
-    return GenerateResponse(answer=answer, citations=citations)
+    system: str = get_system_prompt(intent)
+    answer: str = generate(prompt, system)
+    return GenerateResponse(answer=answer, citations=citations, intent=intent)

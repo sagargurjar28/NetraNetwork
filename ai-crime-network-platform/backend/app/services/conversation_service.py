@@ -46,12 +46,14 @@ def add_message(
     role: str,
     content: str,
     citations: list[dict[str, Any]] | None = None,
+    intent: str | None = None,
 ) -> ChatMessage:
     message: ChatMessage = ChatMessage(
         conversation_id=conversation_id,
         role=role,
         content=content,
         citations=citations,
+        intent=intent,
     )
     db.add(message)
     db.commit()

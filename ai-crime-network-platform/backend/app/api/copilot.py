@@ -46,6 +46,7 @@ def chat(
     conversation_service.add_message(db, convo.id, "user", payload.message)
     answer: str = "The Copilot service is unavailable. Please try again."
     citations: list[Citation] = []
+    intent: str = "general"
     try:
         resp: requests.Response = requests.post(
             f"{settings.COPILOT_SERVICE_URL}/generate",
@@ -60,13 +61,22 @@ def chat(
         data: dict[str, Any] = resp.json()
         answer = str(data.get("answer", answer))
         citations = _to_citations(data.get("citations", []))
+        intent = str(data.get("intent", "general"))
     except Exception:
         answer = "The Copilot service is unavailable. Please try again."
         citations = []
+        intent = "general"
     conversation_service.add_message(
-        db, convo.id, "assistant", answer, [c.model_dump() for c in citations]
+        db,
+        convo.id,
+        "assistant",
+        answer,
+        [c.model_dump() for c in citations],
+        intent=intent,
     )
-    return ChatResponse(conversation_id=convo.id, answer=answer, citations=citations)
+    return ChatResponse(
+        conversation_id=convo.id, answer=answer, citations=citations, intent=intent
+    )
 
 
 @router.get("/conversations/", response_model=list[ConversationRead])

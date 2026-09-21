@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -21,6 +21,7 @@ class ChatResponse(BaseModel):
     conversation_id: UUID
     answer: str
     citations: list[Citation] = []
+    intent: str = "general"
 
 
 class ConversationRead(BaseModel):
@@ -38,6 +39,7 @@ class MessageRead(BaseModel):
     role: str
     content: str
     citations: list[dict[str, Any]] | None = None
+    intent: Optional[str] = None
     created_at: datetime
 
 

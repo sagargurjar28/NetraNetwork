@@ -31,4 +31,5 @@ class ChatMessage(Base):
     role: str = Column(String(20), nullable=False)
     content: str = Column(Text, nullable=False)
     citations: list[dict] | None = Column(JSON, nullable=True)
+    intent: str | None = Column(String(20), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
