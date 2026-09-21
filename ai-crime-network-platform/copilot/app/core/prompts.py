@@ -46,3 +46,21 @@ def get_system_prompt(intent: str) -> str:
     base: str = SYSTEM_PROMPT
     extra: str = INTENT_PROMPTS.get(intent, INTENT_PROMPTS["general"])
     return f"{base}\n\n{extra}"
+
+
+def build_history_messages(history: list[dict]) -> list[dict]:
+    """Convert stored history into Groq chat-format messages.
+    Each entry: {"role": "user"|"assistant", "content": str}.
+    Truncates each message to 500 chars to keep the context compact."""
+    out: list[dict] = []
+    for turn in (history or []):
+        role: str = turn.get("role", "user")
+        content: str = (turn.get("content") or "").strip()
+        if not content:
+            continue
+        if role not in ("user", "assistant"):
+            continue
+        if len(content) > 500:
+            content = content[:500] + "..."
+        out.append({"role": role, "content": content})
+    return out

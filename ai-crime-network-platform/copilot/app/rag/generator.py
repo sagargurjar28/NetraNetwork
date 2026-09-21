@@ -4,10 +4,16 @@ from app.core.config import settings
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 
-def generate(prompt: str, system: str) -> str:
-    """Groq-only generation. Never raises — returns a friendly message on failure."""
+def generate(prompt: str, system: str, history: list[dict] | None = None) -> str:
+    """Groq generation with optional conversation history.
+    Never raises — returns a friendly message on failure."""
     if not settings.GROQ_API_KEY:
         return "LLM unavailable: GROQ_API_KEY is not configured."
+
+    messages: list[dict] = [{"role": "system", "content": system}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": prompt})
 
     try:
         resp = httpx.post(
@@ -18,10 +24,7 @@ def generate(prompt: str, system: str) -> str:
             },
             json={
                 "model": settings.GROQ_MODEL,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": prompt},
-                ],
+                "messages": messages,
                 "temperature": 0.2,
                 "max_tokens": 800,
             },

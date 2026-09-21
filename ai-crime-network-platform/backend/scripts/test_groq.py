@@ -1,14 +1,14 @@
 """Quick Groq connectivity test. Run: python -m scripts.test_groq"""
-import os
 import httpx
+from app.core.config import settings
 
-key = os.environ.get("GROQ_KEY", "").strip()
+key = settings.GROQ_API_KEY.strip()
 if not key:
-    print("❌ GROQ_KEY env var is empty. Set it first:")
-    print('   $env:GROQ_KEY="gsk_your_key_here"')
+    print("❌ GROQ_API_KEY is empty in backend/.env")
     raise SystemExit(1)
 
 print(f"Using key starting with: {key[:8]}...")
+print(f"Using model: {settings.GROQ_MODEL}")
 
 resp = httpx.post(
     "https://api.groq.com/openai/v1/chat/completions",
@@ -17,9 +17,9 @@ resp = httpx.post(
         "Content-Type": "application/json",
     },
     json={
-        "model": "openai/gpt-oss-120b",
-        "messages": [{"role": "user", "content": "say hi"}],
-        "max_tokens": 10,
+        "model": settings.GROQ_MODEL,
+        "messages": [{"role": "user", "content": "say hi in one word"}],
+        "max_tokens": 50,
     },
     timeout=30,
 )

@@ -44,6 +44,12 @@ def chat(
         db, user.id, payload.conversation_id, payload.message
     )
     conversation_service.add_message(db, convo.id, "user", payload.message)
+    # Fetch prior turns (excludes the current message which was just inserted).
+    # The backend fetches 7 and drops the last (current message), leaving 6.
+    all_turns: list[dict[str, str]] = conversation_service.get_recent_turns(
+        db, convo.id, limit=7
+    )
+    history: list[dict[str, str]] = all_turns[:-1] if all_turns else []
     answer: str = "The Copilot service is unavailable. Please try again."
     citations: list[Citation] = []
     intent: str = "general"
@@ -54,6 +60,7 @@ def chat(
                 "message": payload.message,
                 "conversation_id": str(convo.id),
                 "board_id": str(payload.board_id) if payload.board_id else None,
+                "history": history,
             },
             timeout=60,
         )

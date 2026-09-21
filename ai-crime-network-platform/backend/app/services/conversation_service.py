@@ -81,3 +81,21 @@ def list_user_conversations(db: Session, user_id: UUID | str) -> list[Conversati
         .order_by(Conversation.created_at.desc())
         .all()
     )
+
+
+def get_recent_turns(
+    db: Session,
+    conversation_id: UUID | str,
+    limit: int = 6,
+) -> list[dict[str, str]]:
+    """Return the last `limit` messages of a conversation in chronological
+    order as a list of {role, content} dicts."""
+    rows: list[ChatMessage] = (
+        db.query(ChatMessage)
+        .filter(ChatMessage.conversation_id == conversation_id)
+        .order_by(ChatMessage.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+    rows.reverse()  # chronological
+    return [{"role": r.role, "content": r.content} for r in rows]

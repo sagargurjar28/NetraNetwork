@@ -48,3 +48,8 @@ class ConversationDetail(BaseModel):
     title: str | None
     created_at: datetime
     messages: list[MessageRead] = []
+
+
+class HistoryTurn(BaseModel):
+    role: str
+    content: str
