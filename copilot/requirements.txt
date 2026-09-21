@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+httpx
+neo4j
+qdrant-client[fastembed]

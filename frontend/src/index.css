@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { font-family: 'Inter', system-ui, sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+:root {
+  --base: #0b1015;
+  --surface-1: #0a0e12;
+  --surface-2: #10161c;
+  --surface-3: #161d24;
+  --border: rgba(255,255,255,0.06);
+  --text-primary: #e6edf3;
+  --text-secondary: #8b98a5;
+  --text-muted: #5a6672;
+  --accent-primary: #dc2626;
+  --accent-hover: #ef4444;
+  --accent-muted: #991b1b;
+}
+
+html, body { background: #0b1015; color: #e6edf3; }
+
+.app-background { position: relative; background: #0b1015; min-height: 100vh; isolation: isolate; }
+.mesh-root { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.mesh-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.mesh-fallback { position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.06), transparent 40%); opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
+.mesh-fallback.visible { opacity: 1; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a0e12; }
+::-webkit-scrollbar-thumb { background: #161d24; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #232f3b; }
+
+*:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
+a { color: #ef4444; }
+a:hover { color: #dc2626; }

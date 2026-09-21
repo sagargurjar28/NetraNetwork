@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic
+pydantic-settings
+python-jose[cryptography]
+python-multipart
+neo4j
+passlib[bcrypt]
+bcrypt==4.0.1
+requests
+web3
+pypdf

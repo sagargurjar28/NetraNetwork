@@ -1,0 +1,51 @@
+{
+  "login": "http://127.0.0.1:5173/network",
+  "cases-fixtures": {
+    "empty": false,
+    "hasBlackKite": true
+  },
+  "entities-fixtures": {
+    "empty": false,
+    "hasVikram": true
+  },
+  "graph": {
+    "nodes": 8,
+    "paletteBoard": true,
+    "counter": true
+  },
+  "node-create": {
+    "nodes": 9,
+    "failedToast": false
+  },
+  "api-calls": [
+    "GET http://127.0.0.1:5173/src/services/api/boards.ts",
+    "GET http://127.0.0.1:5173/src/services/api/client.ts",
+    "GET http://127.0.0.1:5173/src/services/api/admin.ts",
+    "GET http://127.0.0.1:5173/src/services/api/auth.ts",
+    "GET http://127.0.0.1:5173/src/services/api/copilot.ts",
+    "GET http://127.0.0.1:5173/src/services/api/documents.ts",
+    "GET http://127.0.0.1:5173/src/services/api/network.ts",
+    "GET http://127.0.0.1:5173/src/services/api/boards.ts",
+    "GET http://127.0.0.1:5173/src/services/api/client.ts",
+    "GET http://127.0.0.1:5173/src/services/api/admin.ts",
+    "GET http://127.0.0.1:5173/src/services/api/auth.ts",
+    "GET http://127.0.0.1:5173/src/services/api/copilot.ts",
+    "GET http://127.0.0.1:5173/src/services/api/documents.ts",
+    "GET http://127.0.0.1:5173/src/services/api/network.ts",
+    "GET http://127.0.0.1:5173/src/services/api/boards.ts",
+    "GET http://127.0.0.1:5173/src/services/api/client.ts",
+    "GET http://127.0.0.1:5173/src/services/api/admin.ts",
+    "GET http://127.0.0.1:5173/src/services/api/auth.ts",
+    "GET http://127.0.0.1:5173/src/services/api/copilot.ts",
+    "GET http://127.0.0.1:5173/src/services/api/documents.ts",
+    "GET http://127.0.0.1:5173/src/services/api/network.ts",
+    "GET http://127.0.0.1:5173/src/services/api/boards.ts",
+    "GET http://127.0.0.1:5173/src/services/api/client.ts",
+    "GET http://127.0.0.1:5173/src/services/api/admin.ts",
+    "GET http://127.0.0.1:5173/src/services/api/auth.ts",
+    "GET http://127.0.0.1:5173/src/services/api/copilot.ts",
+    "GET http://127.0.0.1:5173/src/services/api/documents.ts",
+    "GET http://127.0.0.1:5173/src/services/api/network.ts"
+  ],
+  "errors": []
+}
