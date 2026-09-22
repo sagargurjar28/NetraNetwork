@@ -7,6 +7,7 @@ class Intent(str, Enum):
     VECTOR = "vector"
     SUMMARY = "summary"
     GENERAL = "general"
+    BOTH = "both"
 
 
 # Ordered list of (intent, [regex patterns]). First match wins.
@@ -47,16 +48,74 @@ _RULES: list[tuple[Intent, list[str]]] = [
 ]
 
 
+_SUMMARY_RULES = [
+    r"\bsummar(y|ize|ise)\b",
+    r"\boverview\b",
+    r"\bbrief(ly)?\b",
+    r"\btell me about (this|the) case\b",
+    r"\bwhat is this case about\b",
+]
+
+
 def classify_intent(message: str) -> Intent:
-    """Rule-based classification. First matching rule wins.
-    Falls back to GENERAL if nothing matches."""
-    text: str = message.strip().lower()
+    text = message.strip().lower()
     if not text:
         return Intent.GENERAL
 
+    # 1. Summary wins first — it should never hybridize
+    for pattern in _SUMMARY_RULES:
+        if re.search(pattern, text):
+            return Intent.SUMMARY
+
+    # 2. Hybrid check — both graph and vector signals present
+    graph_signal = _has_signal(text, _GRAPH_SIGNALS)
+    vector_signal = _has_signal(text, _VECTOR_SIGNALS)
+    if graph_signal and vector_signal:
+        return Intent.BOTH
+
+    # 3. Explicit graph/vector rules (skip the summary entry — already checked)
     for intent, patterns in _RULES:
+        if intent == Intent.SUMMARY:
+            continue
         for pattern in patterns:
             if re.search(pattern, text):
                 return intent
 
+    # 4. Signal-only fallback
+    if graph_signal:
+        return Intent.GRAPH
+    if vector_signal:
+        return Intent.VECTOR
+
     return Intent.GENERAL
+
+
+_GRAPH_SIGNALS: list[str] = [
+    r"\bwho\b",
+    r"\bconnected\b",
+    r"\blinked\b",
+    r"\brelationship",
+    r"\bnetwork\b",
+    r"\bkingpin\b",
+    r"\bsuspect",
+    r"\bperson\b",
+    r"\bpeople\b",
+    r"\bcalled\b",
+    r"\bcontact",
+]
+
+_VECTOR_SIGNALS: list[str] = [
+    r"\bdocument",
+    r"\bfir\b",
+    r"\bfile\b",
+    r"\breport\b",
+    r"\bevidence\b",
+    r"\bpdf\b",
+    r"\bmentions?\b",
+    r"\bsays?\b",
+    r"\baccording to\b",
+]
+
+
+def _has_signal(text: str, patterns: list[str]) -> bool:
+    return any(re.search(p, text) for p in patterns)
