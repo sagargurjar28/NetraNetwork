@@ -89,7 +89,6 @@ def classify_intent(message: str) -> Intent:
 
     return Intent.GENERAL
 
-
 _GRAPH_SIGNALS: list[str] = [
     r"\bwho\b",
     r"\bconnected\b",
