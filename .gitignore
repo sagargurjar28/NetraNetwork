@@ -16,3 +16,7 @@ ai-crime-network-platform/smart-contracts/artifacts/
 # Venvs
 .venv/
 venv/
+# Stray root npm files
+/package-lock.json
+/node_modules/
+

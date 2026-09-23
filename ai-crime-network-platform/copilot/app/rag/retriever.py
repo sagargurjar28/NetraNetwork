@@ -195,6 +195,34 @@ def _summary_context(board_id: str, question: str) -> tuple[str, list[dict]]:
     return _graph_context(board_id, question)
 
 
+def _hybrid_context(board_id: str, question: str) -> tuple[str, list[dict]]:
+    """Run graph and vector retrieval, merge context and dedupe citations."""
+    graph_ctx, graph_cites = _graph_context(board_id, question)
+    vector_ctx, vector_cites = _vector_context(board_id, question)
+
+    parts: list[str] = []
+    if graph_ctx:
+        parts.append("=== Graph Context ===")
+        parts.append(graph_ctx)
+    if vector_ctx:
+        parts.append("=== Document Context ===")
+        parts.append(vector_ctx)
+
+    merged_ctx: str = "\n\n".join(parts)
+
+    # Deduplicate citations by (type, id)
+    seen: set[tuple[Any, Any]] = set()
+    merged_cites: list[dict] = []
+    for cite in graph_cites + vector_cites:
+        key: tuple[Any, Any] = (cite.get("type"), cite.get("id"))
+        if key in seen:
+            continue
+        seen.add(key)
+        merged_cites.append(cite)
+
+    return (merged_ctx, merged_cites)
+
+
 def retrieve_context(
     board_id: Optional[str],
     question: str,
@@ -219,6 +247,8 @@ def retrieve_context(
             ctx, cites = _vector_context(board_id, question)
         elif intent == Intent.SUMMARY:
             ctx, cites = _summary_context(board_id, question)
+        elif intent == Intent.BOTH:
+            ctx, cites = _hybrid_context(board_id, question)
         else:
             ctx, cites = ("", [])
     except Exception:

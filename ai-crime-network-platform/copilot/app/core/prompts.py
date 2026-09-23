@@ -39,6 +39,14 @@ INTENT_PROMPTS: dict[str, str] = {
         "If the question is not about the case, answer from general knowledge and "
         "say that no case context was used."
     ),
+    "both": (
+        "The user's question mixes network relationships and document evidence. "
+        "The context has two sections: 'Graph Context' (pins and connections) and "
+        "'Document Context' (excerpts from uploaded documents). "
+        "Answer using both, weaving them together. "
+        "Cite entities with [pin:<id>], relationships with [connection:<id>], "
+        "and documents with [document:<id>]."
+    ),
 }
 
 
