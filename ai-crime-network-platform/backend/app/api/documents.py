@@ -13,9 +13,10 @@ from sqlalchemy.orm import Session
 from app.core.config import get_db, settings
 from app.core.rbac import require_permission
 from app.core.security import CurrentUser, get_current_user
+from app.models.board import InvestigationBoard
 from app.models.case import Case
 from app.models.document import Document
-from app.services import blockchain_service, ipfs_service
+from app.services import blockchain_service, ipfs_service, ner_service
 
 router: APIRouter = APIRouter(prefix="/api", tags=["documents"])
 
@@ -74,6 +75,19 @@ def upload_document(
             )
         except Exception:
             pass  # never block upload on indexing failure
+    board: InvestigationBoard | None = (
+        db.query(InvestigationBoard)
+        .filter(InvestigationBoard.case_id == case_id)
+        .first()
+    )
+    if board is not None and extracted_text.strip():
+        try:
+            ner_service.extract_and_create_pins(
+                db=db, board=board, text=extracted_text,
+                document_id=document.id, user_id=user.id,
+            )
+        except Exception:
+            pass  # never block upload on NER failure
     created_at: datetime = document.created_at
     return {
         "id": str(document.id),
