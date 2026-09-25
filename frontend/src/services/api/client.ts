@@ -1,17 +1,28 @@
-import axios from 'axios'
-const client = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL || '/api', timeout: 15000 })
-client.interceptors.request.use(cfg=>{
-  const token = localStorage.getItem('token')
-  if(token) cfg.headers.Authorization = `Bearer ${token}`
-  if(import.meta.env.DEV) console.log('[API]', cfg.method, cfg.url)
-  return cfg
-})
-client.interceptors.response.use(res=>{
-  if(import.meta.env.DEV) console.log('[API RES]', res.config.url, res.status)
-  return res
-}, err=>{
-  const msg = err.response?.data?.message || err.message || 'Unknown error'
-  if(err.response?.status===401){ localStorage.removeItem('token'); window.location.href='/login' }
-  return Promise.reject({ message:msg, status:err.response?.status, raw:err })
-})
-export default client
+import axios from 'axios';
+
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api';
+
+export const client = axios.create({
+  baseURL,
+  timeout: 60000,
+});
+
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+client.interceptors.response.use(
+  (r) => r,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default client;

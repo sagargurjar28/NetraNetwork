@@ -2,7 +2,7 @@ import client from './client'
 import { isMock, delay, maybeError } from '@/mocks/helpers'
 import { mockCreateConnection, mockCreatePin, mockDeletePin, mockGetBoard, mockMovePin, mockRenamePin } from '@/mocks/boards'
 
-export type EntityType = 'person' | 'organization' | 'building' | 'phone' | 'location' | 'document' | 'note'
+export type EntityType = 'person' | 'organization' | 'building' | 'phone' | 'location' | 'document' | 'note' | 'case' | 'fir' | 'bankaccount'
 
 export type BoardPin = {
   id: string
@@ -18,6 +18,7 @@ export type BoardPin = {
     linked_cases?: string[]
     linked_firs?: string[]
     note_text?: string
+    original_type?: string
     [key: string]: unknown
   } | null
   x: number
@@ -41,19 +42,58 @@ export const boardsApi = {
   getBoard: async (boardId: string): Promise<BoardDetail> => {
     if (isMock()) return mockGetBoard(boardId)
     const { data } = await client.get(`/boards/${boardId}/`)
+    return {
+      ...data,
+      pins: (data.pins ?? []).map((p: any) => ({
+        ...p,
+        x: p.position_x ?? p.x ?? 0,
+        y: p.position_y ?? p.y ?? 0,
+      })),
+      connections: data.connections ?? [],
+    }
+  },
+  getBoardByCase: async (caseId: string): Promise<BoardDetail> => {
+    if (isMock()) return mockGetBoard('22222222-2222-2222-2222-222222222222')
+    const { data: list } = await client.get(`/cases/${caseId}/boards/`)
+    if (!list?.length) throw { message: 'No boards for case', status: 404 }
+    const { data } = await client.get(`/boards/${list[0].id}/`)
     return data
   },
-  createPin: async (boardId: string, pin: Omit<BoardPin, 'id' | 'board_id'>): Promise<BoardPin> => {
-    if (isMock()) return mockCreatePin(boardId, pin)
-    const { data } = await client.post(`/boards/${boardId}/pins/`, {
-      entity_type: pin.entity_type, entity_id: pin.entity_id, label: pin.label,
-      content: pin.content, position_x: pin.x, position_y: pin.y, color: pin.color,
-    })
-    return { ...data, x: data.position_x ?? pin.x, y: data.position_y ?? pin.y }
+  createPin: async (boardId: string, pin: any): Promise<BoardPin> => {
+    const entityType: string = pin.entityType ?? pin.entity_type ?? 'person'
+    const label: string = pin.label ?? 'Untitled'
+    const content: BoardPin['content'] = pin.content ?? null
+    const x: number = pin.x ?? pin.position_x ?? 0
+    const y: number = pin.y ?? pin.position_y ?? 0
+    // Backend default pin color; send explicitly since the board never sets one.
+    const color: string = pin.color ?? '#1f77b4'
+    // WRITE SITE: backend only accepts person-like entity types for org/building —
+    // send entity_type 'person' and keep the real type in content.original_type.
+    const isOrg = entityType === 'organization' || entityType === 'building'
+    const payload = {
+      entity_type: (isOrg ? 'person' : entityType) as EntityType,
+      entity_id: pin.entity_id ?? null,
+      label,
+      content: isOrg ? { ...((content as Record<string, unknown>) || {}), original_type: entityType } : content,
+      position_x: x,
+      position_y: y,
+      color,
+    }
+    if (isMock()) return mockCreatePin(boardId, { ...pin, ...payload, x, y, color } as Omit<BoardPin, 'id' | 'board_id'>)
+    const { data } = await client.post(`/boards/${boardId}/pins/`, payload)
+    return { ...data, x: data.position_x ?? x, y: data.position_y ?? y }
   },
-  createConnection: async (boardId: string, conn: Omit<BoardConnection, 'id' | 'board_id'>): Promise<BoardConnection> => {
-    if (isMock()) return mockCreateConnection(boardId, conn)
-    const { data } = await client.post(`/boards/${boardId}/connections/`, conn)
+  createConnection: async (boardId: string, conn: any): Promise<BoardConnection> => {
+    // Backend default confidence; send explicitly since the popover allows blank.
+    const payload = {
+      source_pin_id: conn.source_pin_id ?? conn.source,
+      target_pin_id: conn.target_pin_id ?? conn.target,
+      label: conn.label ?? 'Associated with',
+      confidence: conn.confidence ?? 1.0,
+      notes: conn.notes ?? null,
+    }
+    if (isMock()) return mockCreateConnection(boardId, payload)
+    const { data } = await client.post(`/boards/${boardId}/connections/`, payload)
     return data
   },
   deletePin: async (boardId: string, pinId: string): Promise<void> => {

@@ -1,7 +1,65 @@
-import client from './client'
-import { isMock, delay } from '../../mocks/helpers'
-import { mockConversations } from '../../mocks/fixtures'
-export const copilotApi = {
-  listConversations: async()=>{ if(isMock()){ await delay(); return mockConversations } const {data}=await client.get('/copilot/conversations'); return data },
-  sendMessage: async(payload:any)=>{ if(isMock()){ await delay(500); return { reply: 'This is a mocked assistant response with **markdown**, citation [DOC-001] and analysis.', citations:[{id:'DOC-001', title:'FIR 2024-112'}]} } const {data}=await client.post('/copilot/message',payload); return data },
+import { client } from './client';
+import { isMock, delay } from '@/mocks/helpers';
+
+export interface Citation {
+  type: 'pin' | 'connection' | 'document';
+  id: string;
+  label: string;
 }
+
+export interface CopilotResponse {
+  conversation_id: string;
+  answer: string;
+  citations: Citation[];
+  intent?: string;
+}
+
+export interface CopilotRequest {
+  message: string;
+  conversation_id?: string;
+  board_id?: string;
+}
+
+type LegacySendArgs = {
+  content?: string;
+  domain?: string;
+  attachments?: string[];
+};
+
+export const copilotApi = {
+  sendMessage: async (payload: CopilotRequest & LegacySendArgs): Promise<CopilotResponse> => {
+    if (isMock()) {
+      await delay(500);
+      return {
+        conversation_id: 'mock-convo',
+        answer: 'Mock response.',
+        citations: [],
+        intent: 'general',
+      };
+    }
+    const body: CopilotRequest = {
+      message: payload.message ?? payload.content ?? '',
+      ...(payload.conversation_id ? { conversation_id: payload.conversation_id } : {}),
+      ...(payload.board_id ? { board_id: payload.board_id } : {}),
+    };
+    const { data } = await client.post('/copilot/chat', body);
+    return data as CopilotResponse;
+  },
+
+  listConversations: async (): Promise<unknown> => {
+    if (isMock()) return [];
+    const { data } = await client.get('/copilot/conversations/');
+    return data;
+  },
+
+  getConversation: async (id: string): Promise<unknown> => {
+    if (isMock()) return null;
+    const { data } = await client.get(`/copilot/conversations/${id}/`);
+    return data;
+  },
+
+  deleteConversation: async (id: string): Promise<void> => {
+    if (isMock()) return;
+    await client.delete(`/copilot/conversations/${id}/`);
+  },
+};
