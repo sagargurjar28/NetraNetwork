@@ -137,3 +137,49 @@ def verify_document(
     _user: CurrentUser = Depends(get_current_user),
 ) -> dict[str, Any]:
     return blockchain_service.verify_hash(payload.doc_hash)
+
+
+@router.get("/documents/")
+def list_all_documents(
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    _: CurrentUser = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    docs: list[Document] = (
+        db.query(Document).order_by(Document.created_at.desc()).limit(limit).all()
+    )
+    return [
+        {
+            "id": str(d.id),
+            "caseId": str(d.case_id),
+            "filename": d.filename,
+            "docHash": d.doc_hash,
+            "ipfsCid": d.ipfs_cid,
+            "txHash": d.tx_hash,
+            "createdAt": d.created_at.isoformat() if d.created_at else None,
+        }
+        for d in docs
+    ]
+
+
+@router.get("/documents/{document_id}/")
+def get_document(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+    _: CurrentUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    doc: Document | None = (
+        db.query(Document).filter(Document.id == document_id).first()
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    created_at: datetime | None = doc.created_at
+    return {
+        "id": str(doc.id),
+        "caseId": str(doc.case_id),
+        "filename": doc.filename,
+        "docHash": doc.doc_hash,
+        "ipfsCid": doc.ipfs_cid,
+        "txHash": doc.tx_hash,
+        "createdAt": created_at.isoformat() if created_at else None,
+    }

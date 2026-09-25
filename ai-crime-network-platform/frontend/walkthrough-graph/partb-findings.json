@@ -1,0 +1,48 @@
+{
+  "cases-list": {
+    "count": 4,
+    "titles": [
+      "Operation Black Kite",
+      "Sun Logistics Fraud",
+      "Cyber Extortion Ring",
+      "Narcotics Corridor"
+    ]
+  },
+  "no-unattached": true,
+  "palette-b3": {
+    "paletteTopInCanvas": 421,
+    "canvasH": 802
+  },
+  "board-nodes": 8,
+  "collapse": {
+    "before": 539,
+    "after": 759,
+    "expands": true,
+    "strip": 1
+  },
+  "divider-drag": {
+    "topBefore": 398,
+    "topAfter": 449,
+    "grew": true
+  },
+  "person-create": {
+    "nodes": 9
+  },
+  "phone-create": {
+    "nodes": 10,
+    "requestFailed": false
+  },
+  "select-details": true,
+  "switcher": [
+    {
+      "text": "Criminal Network",
+      "html": "<div class=\"absolute inset-0 bg-accent-primary rounded-full -z-10\" style=\"opacity: 1;\"></div>Criminal Network"
+    },
+    {
+      "text": "Document Management",
+      "html": "Document Management"
+    }
+  ],
+  "api-calls": [],
+  "errors": []
+}

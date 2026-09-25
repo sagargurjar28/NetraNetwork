@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_db, settings
 from app.core.rbac import require_permission
-from app.core.security import CurrentUser
+from app.core.security import CurrentUser, get_current_user
 from app.models.user import User
 from app.schemas.user import LoginRequest, RegisterRequest, TokenResponse, UserRead
 
@@ -58,3 +58,18 @@ def register(
     db.commit()
     db.refresh(new_user)
     return new_user
+
+
+@router.get("/me")
+def me(
+    user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    u: User | None = db.query(User).filter(User.id == user.id).first()
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": str(u.id),
+        "username": str(u.username),
+        "role": str(u.role),
+    }

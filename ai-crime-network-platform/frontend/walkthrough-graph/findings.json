@@ -1,0 +1,64 @@
+{
+  "fixture-node-count": 8,
+  "node-labels": [
+    "Vikram Singh\nPERSON",
+    "Anita Rao\nPERSON",
+    "Sun Logistics\nORGANIZATION",
+    "Godown 7\nBUILDING",
+    "+91 98XXX X2100\nPHONE",
+    "Sector 7 crossing\nLOCATION",
+    "FIR_2024_112.pdf\nDOCUMENT",
+    "Watcher note\nNOTE"
+  ],
+  "palette": [
+    "Person",
+    "Organization",
+    "Building",
+    "Phone",
+    "Location",
+    "Document",
+    "Note"
+  ],
+  "create-person": {
+    "countBefore": 8,
+    "countAfter": 9,
+    "dropClient": [
+      885,
+      592
+    ],
+    "nodeCenter": [
+      949,
+      614
+    ]
+  },
+  "phone-in-band": {
+    "nodeLeft": 41,
+    "bandRight": 81,
+    "inside": true
+  },
+  "vikram-capsules": "Vikram Singh\nPERSON\n📞 +91 98XXX X2100\n📍 Sector 7, Old Mandi\n12 associates\nCase C-2024-018\nFIR FIR-2024-112\nENT-001",
+  "create-edge": {
+    "edgeCount": 6,
+    "inputsInPopover": 2
+  },
+  "duplicate-edge": {
+    "popover": 0,
+    "toast": true,
+    "edges": 6
+  },
+  "right-panel-updates": true,
+  "zoom-works": {
+    "before": "translate(-12.825px, 151.817px) scale(0.61375)",
+    "afterZoomIn": "translate(-69.29px, 101.981px) scale(0.7365)",
+    "changed": true
+  },
+  "export-png": "download-started",
+  "delete-node": {
+    "nodesBefore": 10,
+    "nodesAfter": 9,
+    "edgesBefore": 6,
+    "edgesAfter": 6
+  },
+  "rapid-hover-10x-ms": 3553,
+  "console-errors": []
+}

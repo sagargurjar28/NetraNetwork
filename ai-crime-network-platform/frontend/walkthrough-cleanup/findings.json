@@ -1,0 +1,31 @@
+{
+  "login": true,
+  "graph-nodes": 8,
+  "palette-final": [
+    "Person",
+    "Organization",
+    "Building",
+    "Case",
+    "FIR",
+    "Bank account",
+    "Phone",
+    "Location",
+    "Document",
+    "Note"
+  ],
+  "case-click-board": 8,
+  "person-create": {
+    "nodes": 9,
+    "failed": false
+  },
+  "wizard-step1": true,
+  "cmdk-splitpane": true,
+  "settings-persist": {
+    "before": "false",
+    "after": "true",
+    "toggled": true,
+    "stored": "{\"state\":{\"settings\":{\"name\":\"Inspector Arjun\",\"email\":\"arjun@intel.gov.in\",\"emailAlerts\":true,\"autoRefresh\":true,\"compactMode\":true}},\"version\":0}"
+  },
+  "api-calls": [],
+  "errors": []
+}

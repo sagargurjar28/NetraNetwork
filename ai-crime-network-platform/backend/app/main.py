@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, boards, cases, copilot, documents, graph
+from app.api import admin, auth, boards, cases, copilot, documents, graph, network
 from app.core.config import Base, close_neo4j_driver, engine, get_neo4j_driver
 from app.models import audit as audit_models
 from app.models import board as board_models
@@ -14,7 +14,12 @@ app: FastAPI = FastAPI(title="AI Crime Network Platform")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,3 +51,5 @@ app.include_router(documents.router)
 app.include_router(boards.router)
 app.include_router(copilot.router)
 app.include_router(graph.router)
+app.include_router(network.router)
+app.include_router(admin.router)

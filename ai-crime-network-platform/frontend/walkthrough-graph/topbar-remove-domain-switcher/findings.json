@@ -1,0 +1,16 @@
+{
+  "network": {
+    "title": "Criminal Network",
+    "capsule": 0,
+    "activeNav": "Network",
+    "headerLen": 18
+  },
+  "documents": {
+    "title": "Document Management",
+    "capsule": 0,
+    "activeNav": "Documents",
+    "headerLen": 21
+  },
+  "errors": [],
+  "warnings": []
+}

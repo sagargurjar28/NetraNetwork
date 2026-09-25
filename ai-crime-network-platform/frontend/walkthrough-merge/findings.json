@@ -1,0 +1,54 @@
+{
+  "route-network": {
+    "url": "http://127.0.0.1:5173/network",
+    "mainChars": 371
+  },
+  "route-graph": {
+    "url": "http://127.0.0.1:5173/network/graph",
+    "mainChars": 290
+  },
+  "route-entities": {
+    "url": "http://127.0.0.1:5173/network/entities",
+    "mainChars": 319
+  },
+  "route-cases": {
+    "url": "http://127.0.0.1:5173/network/cases",
+    "mainChars": 304
+  },
+  "route-documents": {
+    "url": "http://127.0.0.1:5173/documents",
+    "mainChars": 256
+  },
+  "route-upload": {
+    "url": "http://127.0.0.1:5173/documents/upload",
+    "mainChars": 109
+  },
+  "route-library": {
+    "url": "http://127.0.0.1:5173/documents/library",
+    "mainChars": 290
+  },
+  "route-copilot": {
+    "url": "http://127.0.0.1:5173/copilot",
+    "mainChars": 484
+  },
+  "split-pane": {
+    "mainBefore": 1173,
+    "mainAfter": 746,
+    "aside": 420,
+    "shrinks": true
+  },
+  "chips": [
+    "[DOC-001]",
+    "[ENT-001]",
+    "[DOC-001] FIR 2024-112",
+    "[ENT-001] Vikram Singh"
+  ],
+  "cite-DOC-001": {
+    "title": "FIR 2024-112",
+    "href": "/documents/DOC-001"
+  },
+  "cite-DOC-001-lands": "http://127.0.0.1:5173/documents/DOC-001",
+  "cite-ENT-001": "chip not found",
+  "console-errors": [],
+  "warnings-non-router": []
+}
