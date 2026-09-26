@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     QDRANT_URL: str = "http://localhost:6333"
     QDRANT_COLLECTION: str = "crime_docs"
+    QDRANT_API_KEY: str = ""
 
 
 settings = Settings()
