@@ -7,11 +7,24 @@ import { SourceDrawer } from './CitationViewer'
 import { toast } from '@/utils/toast'
 import { cn } from '@/utils/cn'
 
+// Demo board — used when the panel is opened without a specific board.
+const DEMO_BOARD = '22222222-2222-2222-2222-222222222222'
+
+function resolveBoardId(): string {
+  try {
+    const url = new URL(window.location.href)
+    const qp = url.searchParams.get('boardId')
+    if (qp) return qp
+    const m = url.pathname.match(/\/boards\/([a-f0-9-]{36})/i)
+    if (m) return m[1]
+  } catch {}
+  return DEMO_BOARD
+}
+
 export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'page'; onClose?: () => void }) {
   const conversations = useCopilotStore((s) => s.conversations)
   const activeId = useCopilotStore((s) => s.activeId)
   const isStreaming = useCopilotStore((s) => s.isStreaming)
-  const store = useCopilotStore.getState()
   const active = conversations.find((c) => c.id === activeId) || null
   const [input, setInput] = useState('')
   const [domain, setDomain] = useState<'auto' | 'network' | 'documents'>(active?.domain || 'auto')
@@ -44,7 +57,11 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
     const sig = abortRef.current
     if (import.meta.env.VITE_USE_MOCKS !== 'true') {
       // Real backend: single POST /copilot/chat, citations adapted to UI shape.
-      copilotApi.sendMessage({ message: prompt }).then(
+      // board_id is resolved at send-time from the URL, with the demo board as fallback.
+      copilotApi.sendMessage({
+        message: prompt,
+        board_id: resolveBoardId(),
+      }).then(
         (res: { answer?: string; citations?: unknown[] }) => {
           if (sig.aborted) return
           const text = res.answer ?? ''
@@ -99,7 +116,6 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
       attachments: attachments.length ? [...attachments] : undefined,
     }
     st.appendMessage(convId, umsg)
-    // persist domain on conversation
     useCopilotStore.setState({ conversations: useCopilotStore.getState().conversations.map((c) => c.id === convId ? { ...c, domain } : c) })
     const prompt = input.trim()
     const atts = attachments.map((a) => a.id)
@@ -130,11 +146,9 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
     if (!conv) return
     const idx = conv.messages.findIndex((m) => m.id === assistantId)
     if (idx < 0) return
-    // find preceding user message for prompt
     let prompt = ''
     for (let i = idx - 1; i >= 0; i--) if (conv.messages[i].role === 'user') { prompt = conv.messages[i].content; break }
     sendCopilotRegenerate(cid, assistantId)
-    // remove old assistant reply, stream new
     useCopilotStore.setState({ conversations: st.conversations.map((c) => c.id === cid ? { ...c, messages: c.messages.filter((m) => m.id !== assistantId) } : c) })
     startAssistant(cid, prompt || 'Regenerate response', conv.domain, [])
     toast('Regenerating…', 'info')
@@ -161,17 +175,15 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
     const el = inputRef.current
     if (!el) return
     el.style.height = 'auto'
-    const lines = Math.min(6, el.value.split('\n').length + 1)
     el.style.height = Math.min(6 * 24, el.scrollHeight) + 'px'
-    void lines
   }
 
   const msgs = active?.messages || []
 
   return (
-    <div className={cn('flex flex-col min-h-0', mode === 'drawer' ? 'h-full' : 'h-full')}>
+    <div className={cn('flex flex-col h-full min-h-0 overflow-hidden', mode === 'drawer' ? '' : '')}>
       {mode === 'drawer' && (
-        <div className="px-3 py-2 border-b border-[rgba(255,255,255,0.06)] flex gap-2 items-center">
+        <div className="px-3 py-2 border-b border-[rgba(255,255,255,0.06)] flex gap-2 items-center shrink-0">
           <select aria-label="Domain context" value={domain} onChange={(e) => setDomain(e.target.value as any)} className="h-8 rounded-lg bg-base border border-[rgba(255,255,255,0.08)] px-2 text-xs text-text-primary">
             <option value="auto">Auto</option><option value="network">Network</option><option value="documents">Documents</option>
           </select>
@@ -180,7 +192,7 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
         </div>
       )}
 
-      <div ref={listRef} className="flex-1 overflow-auto p-4 space-y-3" role="log" aria-label="Copilot messages">
+      <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3" role="log" aria-label="Copilot messages">
         {msgs.length === 0 && (
           <div className="text-center py-10">
             <div className="w-12 h-12 mx-auto rounded-full bg-surface-3 flex items-center justify-center mb-3"><Bot size={20} className="text-text-secondary" /></div>
@@ -194,7 +206,7 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
         {isStreaming && <div className="text-xs text-text-muted">Copilot is typing…</div>}
       </div>
 
-      <div className="p-3 border-t border-[rgba(255,255,255,0.06)]">
+      <div className="p-3 border-t border-[rgba(255,255,255,0.06)] shrink-0">
         {mode === 'page' && (
           <div className="flex gap-2 items-center mb-2">
             <select aria-label="Domain context" value={domain} onChange={(e) => setDomain(e.target.value as any)} className="h-8 rounded-lg bg-base border border-[rgba(255,255,255,0.08)] px-2 text-xs text-text-primary">
