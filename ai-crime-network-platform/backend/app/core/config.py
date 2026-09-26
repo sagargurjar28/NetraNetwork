@@ -1,5 +1,5 @@
+from typing import Optional
 from collections.abc import Generator
-
 from neo4j import Driver, GraphDatabase
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import create_engine
