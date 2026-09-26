@@ -4,16 +4,21 @@ On document upload: entities become pins; co-occurrence becomes connections.
 """
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Optional
 from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-_ML_ROOT: Path = Path(__file__).resolve().parents[3] / "ml-services"
-if str(_ML_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ML_ROOT))
+extract_entities: Optional[Callable] = None
 
-from nlp_extraction.extractor import extract_entities  # noqa: E402
+try:
+    _ML_ROOT: Path = Path(__file__).resolve().parents[3] / "ml-services"
+    if str(_ML_ROOT) not in sys.path:
+        sys.path.insert(0, str(_ML_ROOT))
+    from nlp_extraction.extractor import extract_entities as _extract  # noqa: E402
+    extract_entities = _extract
+except Exception as _e:
+    print(f"[ner_service] NER unavailable (non-fatal): {_e}")
 
 from app.models.board import BoardPin, BoardConnection, InvestigationBoard
 from app.services import graph_service
