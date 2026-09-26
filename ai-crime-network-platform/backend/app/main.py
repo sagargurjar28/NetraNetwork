@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,14 +14,17 @@ from app.models import user as user_models
 
 app: FastAPI = FastAPI(title="AI Crime Network Platform")
 
+# CORS: read allowed origins from env var (comma-separated).
+# Falls back to localhost defaults if not set.
+_cors_env = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173",
+)
+_origins = [o.strip() for o in _cors_env.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -57,7 +62,6 @@ def on_startup() -> None:
             )
     except Exception as e:
         print(f"[startup] Neo4j init failed (non-fatal): {e}")
-        
 
 
 @app.on_event("shutdown")
