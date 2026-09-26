@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = ""
     GROQ_MODEL: str = "openai/gpt-oss-120b"
     COPILOT_SERVICE_URL: str = "http://localhost:8001"
+    PINATA_API_KEY: str = ""
+    PINATA_API_SECRET: str = ""
+    QDRANT_API_KEY: str = ""
 
 
 settings: Settings = Settings()

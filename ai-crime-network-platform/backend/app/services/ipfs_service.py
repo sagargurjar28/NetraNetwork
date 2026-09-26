@@ -1,26 +1,26 @@
-import json
+"""IPFS upload via Pinata HTTP API."""
 from typing import Optional
-
 import requests
-
 from app.core.config import settings
 
 
 def upload_to_ipfs(content: bytes, filename: str) -> Optional[str]:
-    """
-    Pin content to IPFS, return the CID. Returns None on any failure.
-    Never raises — IPFS downtime must not break document uploads.
-    """
+    """Pin content to IPFS via Pinata. Returns CID or None.
+    Never raises — returns None if Pinata is unreachable or misconfigured."""
+    if not settings.PINATA_API_KEY or not settings.PINATA_API_SECRET:
+        return None
     try:
-        resp: requests.Response = requests.post(
-            f"{settings.IPFS_API}/api/v0/add",
+        resp = requests.post(
+            "https://api.pinata.cloud/pinning/pinFileToIPFS",
             files={"file": (filename, content)},
-            params={"pin": "true"},
-            timeout=10,
+            headers={
+                "pinata_api_key": settings.PINATA_API_KEY,
+                "pinata_secret_api_key": settings.PINATA_API_SECRET,
+            },
+            timeout=30,
         )
         if resp.status_code != 200:
             return None
-        last: str = resp.text.strip().splitlines()[-1]
-        return json.loads(last).get("Hash")
+        return resp.json().get("IpfsHash")
     except Exception:
         return None
