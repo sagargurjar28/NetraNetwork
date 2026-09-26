@@ -20,6 +20,11 @@ from app.services import conversation_service
 
 router: APIRouter = APIRouter(prefix="/api/copilot", tags=["copilot"])
 
+# Fallback board when the client doesn't send one.
+# Guarantees the Copilot always has graph context — even from clients
+# that forget to include board_id.
+DEMO_BOARD_ID: str = "22222222-2222-2222-2222-222222222222"
+
 
 def _to_citations(raw: Any) -> list[Citation]:
     citations: list[Citation] = []
@@ -44,22 +49,29 @@ def chat(
         db, user.id, payload.conversation_id, payload.message
     )
     conversation_service.add_message(db, convo.id, "user", payload.message)
+
     # Fetch prior turns (excludes the current message which was just inserted).
-    # The backend fetches 7 and drops the last (current message), leaving 6.
     all_turns: list[dict[str, str]] = conversation_service.get_recent_turns(
         db, convo.id, limit=7
     )
     history: list[dict[str, str]] = all_turns[:-1] if all_turns else []
+
+    # Resolve board_id — use payload value or fall back to demo board.
+    resolved_board_id: str = (
+        str(payload.board_id) if payload.board_id else DEMO_BOARD_ID
+    )
+
     answer: str = "The Copilot service is unavailable. Please try again."
     citations: list[Citation] = []
     intent: str = "general"
+
     try:
         resp: requests.Response = requests.post(
             f"{settings.COPILOT_SERVICE_URL}/generate",
             json={
                 "message": payload.message,
                 "conversation_id": str(convo.id),
-                "board_id": str(payload.board_id) if payload.board_id else None,
+                "board_id": resolved_board_id,
                 "history": history,
             },
             timeout=60,
@@ -73,6 +85,7 @@ def chat(
         answer = "The Copilot service is unavailable. Please try again."
         citations = []
         intent = "general"
+
     conversation_service.add_message(
         db,
         convo.id,
@@ -81,8 +94,12 @@ def chat(
         [c.model_dump() for c in citations],
         intent=intent,
     )
+
     return ChatResponse(
-        conversation_id=convo.id, answer=answer, citations=citations, intent=intent
+        conversation_id=convo.id,
+        answer=answer,
+        citations=citations,
+        intent=intent,
     )
 
 
@@ -100,8 +117,8 @@ def get_conversation(
     db: Session = Depends(get_db),
     user: CurrentUser = Depends(get_current_user),
 ) -> ConversationDetail:
-    convo: Conversation | None = (
-        conversation_service.get_conversation_with_messages(db, conversation_id, user.id)
+    convo: Conversation | None = conversation_service.get_conversation_with_messages(
+        db, conversation_id, user.id
     )
     if convo is None:
         raise HTTPException(
@@ -130,8 +147,8 @@ def delete_conversation(
     db: Session = Depends(get_db),
     user: CurrentUser = Depends(get_current_user),
 ) -> Response:
-    convo: Conversation | None = (
-        conversation_service.get_conversation_with_messages(db, conversation_id, user.id)
+    convo: Conversation | None = conversation_service.get_conversation_with_messages(
+        db, conversation_id, user.id
     )
     if convo is None:
         raise HTTPException(
