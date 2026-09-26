@@ -28,11 +28,11 @@ export function Sidebar() {
              Accepted formats: .svg (preferred) or .png.
              Recommended dimensions: SVG any size; PNG ≥ 128×128 with
              transparent background. */
-          <div className="flex min-h-[28px] items-center">
+          <div className="flex min-h-16 items-center">
             <img
               src="/assets/netra-logo.svg"
               alt="NetraNetwork"
-              className="h-7 w-auto select-none"
+              className="h-16 w-auto select-none"
               draggable={false}
               onError={(e) => {
                 const img = e.currentTarget as HTMLImageElement;
