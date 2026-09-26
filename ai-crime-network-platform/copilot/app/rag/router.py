@@ -62,30 +62,16 @@ def classify_intent(message: str) -> Intent:
     if not text:
         return Intent.GENERAL
 
-    # 1. Summary wins first — it should never hybridize
+    # Summary always wins
     for pattern in _SUMMARY_RULES:
         if re.search(pattern, text):
             return Intent.SUMMARY
 
-    # 2. Hybrid check — both graph and vector signals present
+    # Everything else that has any graph or vector signal → BOTH
     graph_signal = _has_signal(text, _GRAPH_SIGNALS)
     vector_signal = _has_signal(text, _VECTOR_SIGNALS)
-    if graph_signal and vector_signal:
+    if graph_signal or vector_signal:
         return Intent.BOTH
-
-    # 3. Explicit graph/vector rules (skip the summary entry — already checked)
-    for intent, patterns in _RULES:
-        if intent == Intent.SUMMARY:
-            continue
-        for pattern in patterns:
-            if re.search(pattern, text):
-                return intent
-
-    # 4. Signal-only fallback
-    if graph_signal:
-        return Intent.GRAPH
-    if vector_signal:
-        return Intent.VECTOR
 
     return Intent.GENERAL
 

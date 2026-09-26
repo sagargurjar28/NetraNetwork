@@ -423,6 +423,27 @@ function BoardCanvas() {
                   ))}
                 </div>
               )}
+              {selectedPin.entity_id && (
+                <div className="space-y-1 border-t border-[rgba(255,255,255,0.06)] pt-3">
+                  <div className="mb-1 text-xs font-medium text-text-primary">Linked entity</div>
+                  <div className="font-mono text-xs text-text-secondary break-words">{selectedPin.entity_id}</div>
+                </div>
+              )}
+              {selectedPin.content && Object.keys(selectedPin.content).length > 0 && (
+                <div className="space-y-1 border-t border-[rgba(255,255,255,0.06)] pt-3">
+                  <div className="mb-1 text-xs font-medium text-text-primary">Details</div>
+                  {Object.entries(selectedPin.content)
+                    .filter(([k, v]) => k !== 'source_document_id' && v !== null && v !== undefined)
+                    .map(([k, v]) => (
+                      <div key={k} className="flex items-start justify-between gap-2 text-sm">
+                        <span className="shrink-0 text-text-muted">{k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ')}</span>
+                        <span className="text-right text-text-secondary break-words">
+                          {Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? JSON.stringify(v) : String(v)}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              )}
               <div className="border-t border-[rgba(255,255,255,0.06)] pt-3 font-mono text-[11px] text-text-muted">
                 x: {Math.round(selectedPin.x)} • y: {Math.round(selectedPin.y)}
               </div>

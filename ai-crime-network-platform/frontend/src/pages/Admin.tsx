@@ -8,6 +8,12 @@ export default function Admin(){
   const { data:users } = useQuery({ queryKey:['admin-users'], queryFn:()=> adminApi.listUsers() })
   const { data:logs } = useQuery({ queryKey:['admin-logs'], queryFn:()=> adminApi.auditLogs() })
   const { data:health } = useQuery({ queryKey:['admin-health'], queryFn:()=> adminApi.health() })
+  const rows = (users || []).map((u: any) => ({
+    name: u.name ?? u.username ?? '—',
+    email: u.email ?? '—',
+    role: u.role ?? '—',
+    lastActive: u.lastActive ?? (u.createdAt ? String(u.createdAt).slice(0, 10) : '—'),
+  }))
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-4 gap-4">
@@ -20,7 +26,7 @@ export default function Admin(){
           {key:'email',header:'Email'},
           {key:'role',header:'Role', render:(r:any)=> <Badge variant={r.role==='admin'?'danger':'info'}>{r.role}</Badge>},
           {key:'lastActive',header:'Last Active'},
-        ]} data={users||[]}/>
+        ]} data={rows}/>
       </Card>
       <Card className="p-4">
         <h3 className="font-medium text-[#e6edf3] mb-3">Audit Log</h3>

@@ -1,4 +1,4 @@
-// Backend has no matching routes. Mock-only regardless of VITE_USE_MOCKS. Do not change behavior.
+// Real routes live under /api/network (see backend/app/api/network.py); mock branch used when VITE_USE_MOCKS=true.
 import client from './client'
 import { isMock, delay, maybeError } from '../../mocks/helpers'
 import { mockEntities, mockCases, mockGraph, mockRelations } from '../../mocks/fixtures'

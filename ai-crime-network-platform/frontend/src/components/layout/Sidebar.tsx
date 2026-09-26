@@ -28,17 +28,17 @@ export function Sidebar() {
              Accepted formats: .svg (preferred) or .png.
              Recommended dimensions: SVG any size; PNG ≥ 128×128 with
              transparent background. */
-          <div className="flex min-h-16 items-center">
+          <div className="flex items-center gap-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] px-3 py-2">
             <img
               src="/assets/netra-logo.svg"
               alt="NetraNetwork"
-              className="h-16 w-auto select-none"
+              className="h-8 w-auto select-none"
               draggable={false}
               onError={(e) => {
-                const img = e.currentTarget as HTMLImageElement;
-                img.style.display = 'none';
-                const fb = img.nextElementSibling as HTMLElement | null;
-                if (fb) fb.style.display = 'inline-block';
+                const img = e.currentTarget as HTMLImageElement
+                img.style.display = 'none'
+                const fb = img.nextElementSibling as HTMLElement | null
+                if (fb) fb.style.display = 'inline-block'
               }}
             />
             <span

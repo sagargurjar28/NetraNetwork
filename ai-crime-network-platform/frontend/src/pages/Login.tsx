@@ -24,17 +24,17 @@ export default function Login() {
               Accepted formats: .svg (preferred) or .png.
               Recommended dimensions: SVG any size; PNG ≥ 128×128 with
               transparent background. */}
-          <div className="flex min-h-16 items-center mb-3">
+          <div className="flex items-center gap-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] px-3 py-2 mb-3">
             <img
               src="/assets/netra-logo.svg"
               alt="NetraNetwork"
-              className="h-16 w-auto select-none"
+              className="h-8 w-auto select-none"
               draggable={false}
               onError={(e) => {
-                const img = e.currentTarget as HTMLImageElement;
-                img.style.display = 'none';
-                const fb = img.nextElementSibling as HTMLElement | null;
-                if (fb) fb.style.display = 'inline-block';
+                const img = e.currentTarget as HTMLImageElement
+                img.style.display = 'none'
+                const fb = img.nextElementSibling as HTMLElement | null
+                if (fb) fb.style.display = 'inline-block'
               }}
             />
             <span
@@ -52,6 +52,11 @@ export default function Login() {
           {m.isError && <div className="text-sm text-accent-danger bg-accent-danger/10 border border-accent-danger/20 rounded-lg px-3 py-2">{(m.error as any)?.message || 'Login failed'}</div>}
           <Button type="submit" loading={m.isPending} className="w-full">Sign In</Button>
           <p className="text-xs text-muted-foreground">Secured with JWT — contact admin for credentials</p>
+          <div className="mt-4 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] p-3 text-xs text-text-muted">
+            <div className="font-medium text-text-secondary mb-1">Demo credentials</div>
+            <div>Username: <code className="text-accent-primary">admin</code></div>
+            <div>Password: <code className="text-accent-primary">admin123</code></div>
+          </div>
         </form>
       </Card>
     </div>

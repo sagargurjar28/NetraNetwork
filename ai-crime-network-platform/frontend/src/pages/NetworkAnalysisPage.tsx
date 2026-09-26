@@ -1,7 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { useNetworkStats, useCases } from '@/hooks/queries/useNetwork'
+import { useNetworkStats } from '@/hooks/queries/useNetwork'
+import client from '@/services/api/client'
+import { networkApi } from '@/services/api'
+import { isMock } from '@/mocks/helpers'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ArrowRight, AlertTriangle, Users, Link2, FileWarning } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -9,7 +13,18 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip as RTooltip } from '
 
 export default function NetworkHome(){
   const { data:stats, isLoading } = useNetworkStats()
-  const { data:casesData } = useCases()
+  const [recentCases, setRecentCases] = useState<any[]>([])
+  useEffect(() => {
+    if (isMock()) {
+      networkApi.getCases()
+        .then((res) => setRecentCases(res?.data || []))
+        .catch((err) => console.error('[network] cases fetch', err))
+      return
+    }
+    client.get('/cases/')
+      .then(({ data }) => setRecentCases(Array.isArray(data) ? data : []))
+      .catch((err) => console.error('[network] cases fetch', err))
+  }, [])
   const kpis = stats ? [
     { label:'Active Cases', value: stats.activeCases, icon: FileWarning, color:'primary' },
     { label:'Entities Tracked', value: stats.entitiesTracked, icon: Users, color:'info' },
@@ -26,7 +41,7 @@ export default function NetworkHome(){
         <Card className="p-4 col-span-2">
           <div className="flex items-center justify-between mb-4"><h3 className="font-medium text-[#e6edf3]">Recent Cases</h3><Link to="/network/cases" className="text-sm text-[#dc2626] flex items-center gap-1">View all <ArrowRight size={14}/></Link></div>
           <div className="space-y-3">
-            {(casesData?.data||[]).slice(0,3).map((c:any)=> <div key={c.id} className="flex items-center justify-between p-3 rounded-lg bg-[#10161c] border border-[rgba(255,255,255,0.06)]">
+            {recentCases.slice(0,5).map((c:any)=> <div key={c.id} className="flex items-center justify-between p-3 rounded-lg bg-[#10161c] border border-[rgba(255,255,255,0.06)]">
               <div><div className="font-medium text-sm text-[#e6edf3]">{c.title}</div><div className="text-xs text-[#8b98a5] font-mono">{c.id} • {c.officer}</div></div><Badge variant={c.priority==='High'?'danger': c.priority==='Medium'?'warning':'default'}>{c.status}</Badge>
             </div>)}
           </div>
