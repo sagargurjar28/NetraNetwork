@@ -12,6 +12,7 @@ export type BoardPin = {
   label: string
   content: {
     gender?: 'male' | 'female' | 'neutral'
+    role?: 'suspect' | 'victim' | 'witness' | 'related'
     phone?: string
     address?: string
     associates_count?: number

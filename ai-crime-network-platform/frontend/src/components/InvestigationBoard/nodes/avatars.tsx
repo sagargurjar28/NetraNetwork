@@ -1,8 +1,8 @@
 /** Gender-aware SVG silhouettes for person nodes. */
-export function Avatar({ gender = 'neutral' }: { gender?: 'male' | 'female' | 'neutral' }) {
+export function Avatar({ gender = 'neutral', className = 'h-9 w-9 shrink-0 text-text-secondary' }: { gender?: 'male' | 'female' | 'neutral'; className?: string }) {
   if (gender === 'male') {
     return (
-      <svg viewBox="0 0 32 32" className="h-9 w-9 shrink-0 text-text-secondary" aria-hidden>
+      <svg viewBox="0 0 32 32" className={className} aria-hidden>
         <path d="M6 28c0-6 4-9 10-9s10 3 10 9v1H6v-1z" fill="currentColor" opacity="0.85" />
         <path d="M9 14c0-5 2-9 7-9s7 4 7 9c0 4-3 7-7 7s-7-3-7-7z" fill="currentColor" />
         <path d="M8 12c-1-6 3-10 8-10s9 4 8 10c-2-3-4-4-4-4s0 2-1 2-1-3-3-3-2 4-5 4-2 0-3 1z" fill="currentColor" opacity="0.55" />
@@ -11,7 +11,7 @@ export function Avatar({ gender = 'neutral' }: { gender?: 'male' | 'female' | 'n
   }
   if (gender === 'female') {
     return (
-      <svg viewBox="0 0 32 32" className="h-9 w-9 shrink-0 text-text-secondary" aria-hidden>
+      <svg viewBox="0 0 32 32" className={className} aria-hidden>
         <path d="M22 8c3 1 5 4 5 8 0 4-2 7-4 8l1 4h-3l-1-5c-1 1-1 1-1-1V8h3z" fill="none" stroke="currentColor" strokeWidth="1.6" opacity="0.8" />
         <circle cx="15" cy="12" r="7" fill="currentColor" />
         <path d="M7 28c0-6 3.5-9 8-9s8 3 8 9v1H7v-1z" fill="currentColor" opacity="0.85" />
@@ -19,7 +19,7 @@ export function Avatar({ gender = 'neutral' }: { gender?: 'male' | 'female' | 'n
     )
   }
   return (
-    <svg viewBox="0 0 32 32" className="h-9 w-9 shrink-0 text-text-secondary" aria-hidden>
+    <svg viewBox="0 0 32 32" className={className} aria-hidden>
       <circle cx="16" cy="11" r="6.5" fill="currentColor" />
       <path d="M7 28c0-6 4-9 9-9s9 3 9 9v1H7v-1z" fill="currentColor" opacity="0.85" />
     </svg>

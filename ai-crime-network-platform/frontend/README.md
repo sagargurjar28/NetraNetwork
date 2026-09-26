@@ -1,4 +1,4 @@
-IntelGrid frontend — part of the NetraNetwork repository.
+NetraNetwork frontend — part of the NetraNetwork repository.
 
 Stack: Vite + React + TypeScript + Tailwind + zustand + TanStack Query + react-force-graph-2d
 

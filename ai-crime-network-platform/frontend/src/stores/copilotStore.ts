@@ -47,7 +47,7 @@ export const useCopilotStore = create<CopilotStore>()(
         {
           id: 'conv-1', title: 'Black Kite network analysis', createdAt: '2024-11-13T09:00:00.000Z',
           updatedAt: '2024-11-13T10:00:00.000Z', pinned: true, domain: 'network',
-          messages: [{ id: 'm-welcome', role: 'assistant', content: 'Hello, I am your IntelGrid Copilot. Ask about cases, entities, or documents.', createdAt: '2024-11-13T09:00:00.000Z' }],
+          messages: [{ id: 'm-welcome', role: 'assistant', content: 'Hello, I am your NetraNetwork Copilot. Ask about cases, entities, or documents.', createdAt: '2024-11-13T09:00:00.000Z' }],
         },
       ],
       activeId: 'conv-1',
@@ -131,6 +131,7 @@ export const useCopilotStore = create<CopilotStore>()(
       })),
     }),
     {
+      // legacy key name — do not rename without migration
       name: 'intelgrid.copilot.v2',
       version: 2,
       migrate: (persisted: any) => {

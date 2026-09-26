@@ -1,6 +1,6 @@
 import type { NodeTypes } from '@xyflow/react'
 import type { BoardPin } from '@/services/api/boards'
-import { PersonNode } from './PersonNode'
+import { PersonNodeVertical } from './PersonNodeVertical'
 import { OrganizationNode, BuildingNode } from './OrgBuildingNodes'
 import { PhoneNode, LocationNode, DocumentNode, NoteNode } from './SecondaryNodes'
 import { CaseNode, FirNode, BankNode } from './RecordNodes'
@@ -10,7 +10,7 @@ import { CaseNode, FirNode, BankNode } from './RecordNodes'
  * references change, so never define them inside a component render.
  */
 export const nodeTypes: NodeTypes = {
-  person: PersonNode,
+  person: PersonNodeVertical,
   organization: OrganizationNode,
   building: BuildingNode,
   phone: PhoneNode,

@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Network, FileText, Bot, Settings, Shield, ChevronLeft, ChevronRight, LogOut } from 'lucide-react'
+import { LayoutDashboard, Network, FileText, Bot, Settings, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { useUIStore } from '@/stores/uiStore'
 import { useAuthStore } from '@/stores/authStore'
+import { UserMenu } from './UserMenu'
 
 const nav = [
   { label: 'Network', href: '/network', icon: Network },
@@ -19,11 +20,35 @@ export function Sidebar() {
   const { sidebarCollapsed, toggleSidebar } = useUIStore()
   const loc = useLocation()
   const user = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
   return (
     <aside className={cn('flex flex-col bg-transparent rounded-l-shell rounded-r-none transition-all duration-200 shrink-0', sidebarCollapsed ? 'w-[64px]' : 'w-[240px]')}>
       <div className="h-14 flex items-center px-3 justify-between">
-        {!sidebarCollapsed && <span className="font-bold tracking-widest text-sm text-text-primary">INTEL<span className="text-accent-primary">GRID</span></span>}
+        {!sidebarCollapsed && (
+          /* LOGO: asset lives at /assets/netra-logo.svg (user-supplied).
+             Accepted formats: .svg (preferred) or .png.
+             Recommended dimensions: SVG any size; PNG ≥ 128×128 with
+             transparent background. */
+          <div className="flex min-h-[28px] items-center">
+            <img
+              src="/assets/netra-logo.svg"
+              alt="NetraNetwork"
+              className="h-7 w-auto select-none"
+              draggable={false}
+              onError={(e) => {
+                const img = e.currentTarget as HTMLImageElement;
+                img.style.display = 'none';
+                const fb = img.nextElementSibling as HTMLElement | null;
+                if (fb) fb.style.display = 'inline-block';
+              }}
+            />
+            <span
+              className="hidden text-base font-semibold tracking-tight"
+              aria-hidden="true"
+            >
+              NetraNetwork
+            </span>
+          </div>
+        )}
         <button onClick={toggleSidebar} aria-label="Toggle sidebar" className="p-1.5 rounded-lg bg-surface-2 border border-[rgba(255,255,255,0.06)] text-text-secondary hover:text-text-primary">
           {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -46,10 +71,16 @@ export function Sidebar() {
           )
         })}
       </nav>
-      <div className="p-3 border-t border-[rgba(255,255,255,0.06)] flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-surface-3 flex items-center justify-center text-xs font-medium text-text-secondary">{user?.name?.[0] || 'A'}</div>
-        {!sidebarCollapsed && <div className="flex-1 min-w-0"><div className="text-sm font-medium text-text-primary truncate">{user?.name || 'Inspector Arjun'}</div><div className="text-xs text-text-muted truncate">{user?.role}</div></div>}
-        {!sidebarCollapsed && <button onClick={logout} aria-label="Logout" className="p-1 text-text-secondary hover:text-accent-danger"><LogOut size={16} /></button>}
+      <div className="p-3 border-t border-[rgba(255,255,255,0.06)]">
+        <UserMenu
+          align="left"
+          trigger={
+            <>
+              <div className="w-8 h-8 shrink-0 rounded-full bg-surface-3 flex items-center justify-center text-xs font-medium text-text-secondary">{user?.name?.[0] || 'A'}</div>
+              {!sidebarCollapsed && <div className="flex-1 min-w-0"><div className="text-sm font-medium text-text-primary truncate">{user?.name || 'Inspector Arjun'}</div><div className="text-xs text-text-muted truncate">{user?.role}</div></div>}
+            </>
+          }
+        />
       </div>
     </aside>
   )
