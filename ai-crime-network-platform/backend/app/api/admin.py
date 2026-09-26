@@ -46,29 +46,42 @@ def admin_health(
         "qdrant": "unknown",
     }
 
+
 @router.post("/resync-graph")
 def resync_graph(
+    limit: int = 10,
+    offset: int = 0,
     db: Session = Depends(get_db),
-    _=Depends(require_permission("manage_users")),
-):
-    """Push all pins and connections from Postgres to Neo4j.
-    Useful when Neo4j is empty but Postgres has data."""
+    _: CurrentUser = Depends(require_permission("manage_users")),
+) -> dict[str, Any]:
+    """Push pins and connections from Postgres to Neo4j in batches.
+
+    Call repeatedly with increasing offset until `done: true`.
+    Batched to stay under Railway's request timeout.
+    """
     from app.models.board import InvestigationBoard, BoardPin, BoardConnection
     from app.services import graph_service
 
-    synced_boards = 0
-    synced_pins = 0
-    synced_conns = 0
+    total_pins: int = db.query(BoardPin).count()
+    total_conns: int = db.query(BoardConnection).count()
+
+    boards = db.query(InvestigationBoard).all()
+    pins = db.query(BoardPin).offset(offset).limit(limit).all()
+    conns = db.query(BoardConnection).offset(offset).limit(limit).all()
+
+    synced_boards: int = 0
+    synced_pins: int = 0
+    synced_conns: int = 0
     failures: list[str] = []
 
-    for board in db.query(InvestigationBoard).all():
+    for board in boards:
         try:
             graph_service.sync_board(board.id, board.case_id, board.name)
             synced_boards += 1
         except Exception as e:
             failures.append(f"board {board.id}: {e}")
 
-    for pin in db.query(BoardPin).all():
+    for pin in pins:
         try:
             graph_service.sync_pin(
                 pin_id=pin.id,
@@ -82,7 +95,7 @@ def resync_graph(
         except Exception as e:
             failures.append(f"pin {pin.label}: {e}")
 
-    for conn in db.query(BoardConnection).all():
+    for conn in conns:
         try:
             graph_service.sync_connection(
                 connection_id=conn.id,
@@ -97,9 +110,18 @@ def resync_graph(
         except Exception as e:
             failures.append(f"conn {conn.id}: {e}")
 
+    next_offset: int = offset + limit
+    done: bool = next_offset >= max(total_pins, total_conns)
+
     return {
+        "offset": offset,
+        "limit": limit,
+        "total_pins": total_pins,
+        "total_connections": total_conns,
         "boards_synced": synced_boards,
         "pins_synced": synced_pins,
         "connections_synced": synced_conns,
         "failures": failures[:20],
+        "next_offset": next_offset if not done else None,
+        "done": done,
     }
