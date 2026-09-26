@@ -26,18 +26,38 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root():
+    return {"service": "netra-backend", "status": "ok"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @app.on_event("startup")
 def on_startup() -> None:
-    Base.metadata.create_all(bind=engine)
-    driver = get_neo4j_driver()
-    with driver.session() as session:
-        session.run("RETURN 1")
-        session.run(
-            "CREATE CONSTRAINT IF NOT EXISTS FOR (b:Board) REQUIRE b.board_id IS UNIQUE"
-        )
-        session.run(
-            "CREATE CONSTRAINT IF NOT EXISTS FOR (c:Case) REQUIRE c.case_id IS UNIQUE"
-        )
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"[startup] Postgres init failed (non-fatal): {e}")
+
+    try:
+        driver = get_neo4j_driver()
+        with driver.session() as session:
+            session.run("RETURN 1")
+            session.run(
+                "CREATE CONSTRAINT IF NOT EXISTS "
+                "FOR (b:Board) REQUIRE b.board_id IS UNIQUE"
+            )
+            session.run(
+                "CREATE CONSTRAINT IF NOT EXISTS "
+                "FOR (c:Case) REQUIRE c.case_id IS UNIQUE"
+            )
+    except Exception as e:
+        print(f"[startup] Neo4j init failed (non-fatal): {e}")
+        
 
 
 @app.on_event("shutdown")
