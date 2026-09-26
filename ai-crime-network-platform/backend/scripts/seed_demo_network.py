@@ -19,86 +19,105 @@ ADMIN_ID      = uuid.UUID("33333333-3333-3333-3333-333333333333")
 # ─── PINS ──────────────────────────────────────────────────────────────
 PINS = [
     # (label, entity_type, color, x, y, content)
-    # PEOPLE — suspects
-    ("Arun Mehta",      "person", "#dc2626", 800,  100, {"role": "suspect", "location": "Dubai", "note": "Kingpin. Operates via burner."}),
-    ("Vikram Singh",    "person", "#dc2626", 400,  200, {"role": "suspect", "location": "Mumbai", "note": "Distributor. Handles logistics."}),
-    ("Priya Sharma",    "person", "#dc2626", 600,  400, {"role": "suspect", "location": "Gurgaon", "note": "Cybercrime head. Fake call center."}),
-    ("Rahul Verma",     "person", "#dc2626", 200,  400, {"role": "suspect", "location": "Kochi", "note": "Supplies contraband."}),
-    ("Anita Desai",     "person", "#dc2626", 800,  500, {"role": "suspect", "location": "Delhi", "note": "Shell company director."}),
-    ("Karan Malhotra",  "person", "#6b7280", 1000, 300, {"role": "related", "location": "Delhi", "note": "Businessman. Under watch."}),
-    ("Suresh Nair",     "person", "#dc2626", 500,  300, {"role": "suspect", "location": "Mumbai", "note": "Vikram's lieutenant."}),
-    # PEOPLE — victims and witnesses
-    ("Ravi Kumar",      "person", "#f59e0b", 300,  100, {"role": "victim",  "location": "Mumbai", "note": "Extortion complainant."}),
-    ("Deepak Joshi",    "person", "#3b82f6", 150,  500, {"role": "witness", "location": "Kochi", "note": "Informer — port activity."}),
-    ("Neha Gupta",      "person", "#f59e0b", 700,  600, {"role": "victim",  "location": "Pune", "note": "Cybercrime victim."}),
 
-    # PHONES
-    ("+91-99xxxx4444", "phone", "#f97316", 700,  50, {"owner": "Arun Mehta", "note": "Dubai burner"}),
-    ("+91-96xxxx1111", "phone", "#f97316", 400,  300, {"owner": "Suresh Nair", "note": "Known associate"}),
-    ("+91-97xxxx2222", "phone", "#f97316", 550,  350, {"owner": "Priya Sharma", "note": "Call center line"}),
-    ("+91-98xxxx5555", "phone", "#f97316", 500,  400, {"owner": "Vikram Singh", "note": "Personal"}),
+    # ── PEOPLE — suspects
+    ("Arun Mehta",      "person", "#dc2626", 800,  100, {"role": "suspect", "location": "Dubai",    "note": "Kingpin. Operates via burner."}),
+    ("Vikram Singh",    "person", "#dc2626", 400,  200, {"role": "suspect", "location": "Mumbai",   "note": "Distributor. Handles logistics."}),
+    ("Priya Sharma",    "person", "#dc2626", 600,  400, {"role": "suspect", "location": "Gurgaon",  "note": "Cybercrime head. Fake call center."}),
+    ("Rahul Verma",     "person", "#dc2626", 200,  400, {"role": "suspect", "location": "Kochi",    "note": "Supplies contraband."}),
+    ("Anita Desai",     "person", "#dc2626", 800,  500, {"role": "suspect", "location": "Delhi",    "note": "Shell company director."}),
+    ("Karan Malhotra",  "person", "#6b7280", 1000, 300, {"role": "related", "location": "Delhi",    "note": "Businessman. Under watch."}),
+    ("Suresh Nair",     "person", "#dc2626", 500,  300, {"role": "suspect", "location": "Mumbai",   "note": "Vikram's lieutenant."}),
+    ("Salim Sheikh",    "person", "#dc2626", 350,  550, {"role": "suspect", "location": "Mumbai",   "note": "Cash courier. Goa-Mumbai run."}),
+
+    # ── PEOPLE — victims and witnesses
+    ("Ravi Kumar",      "person", "#f59e0b", 300,  100, {"role": "victim",  "location": "Mumbai",   "note": "Extortion complainant."}),
+    ("Deepak Joshi",    "person", "#3b82f6", 150,  500, {"role": "witness", "location": "Kochi",    "note": "Informer — port activity."}),
+    ("Neha Gupta",      "person", "#f59e0b", 700,  600, {"role": "victim",  "location": "Pune",     "note": "Cybercrime victim."}),
+
+    # ── PHONES
+    ("+91-99xxxx4444", "phone", "#f97316", 700,  50,  {"owner": "Arun Mehta",     "note": "Dubai burner"}),
+    ("+91-96xxxx1111", "phone", "#f97316", 400,  300, {"owner": "Suresh Nair",    "note": "Known associate"}),
+    ("+91-97xxxx2222", "phone", "#f97316", 550,  350, {"owner": "Priya Sharma",   "note": "Call center line"}),
+    ("+91-98xxxx5555", "phone", "#f97316", 500,  400, {"owner": "Vikram Singh",   "note": "Personal"}),
     ("+91-95xxxx3333", "phone", "#f97316", 950,  200, {"owner": "Karan Malhotra", "note": "Hidden burner"}),
 
-    # LOCATIONS
+    # ── LOCATIONS
     ("Mumbai Warehouse", "location", "#16a34a", 400,  150, {"note": "Storage hub"}),
     ("Kochi Port",       "location", "#16a34a", 100,  400, {"note": "Entry point"}),
     ("Gurgaon Center",   "location", "#16a34a", 600,  450, {"note": "Call center"}),
     ("Goa Resort",       "location", "#16a34a", 300,  500, {"note": "Neutral meeting spot"}),
     ("Delhi Office",     "location", "#16a34a", 900,  400, {"note": "Anita's shell company"}),
 
-    # BANK ACCOUNTS
-    ("HDFC A/c 1234",  "bankaccount", "#9333ea", 300,  650, {"note": "Primary hawala"}),
-    ("SBI A/c 5678",   "bankaccount", "#9333ea", 500,  650, {"note": "Shell company"}),
-    ("ICICI A/c 9012", "bankaccount", "#9333ea", 700,  700, {"note": "Priya's collection"}),
+    # ── BANK ACCOUNTS
+    ("HDFC A/c 1234",         "bankaccount", "#9333ea", 300,  650, {"note": "Primary hawala"}),
+    ("SBI A/c 5678",          "bankaccount", "#9333ea", 500,  650, {"note": "Shell company"}),
+    ("ICICI A/c 9012",        "bankaccount", "#9333ea", 700,  700, {"note": "Priya's collection"}),
+    ("Emirates NBD A/c 4455", "bankaccount", "#9333ea", 850,  700, {"note": "Dubai settlement"}),
+
+    # ── FORENSIC EXHIBITS
+    ("CCTV log — Goa Resort", "note", "#8b98a5", 300, 450, {"note": "Camera 4 footage, same week"}),
 ]
 
 
 # ─── CONNECTIONS ──────────────────────────────────────────────────────
 # (source_label, target_label, relationship, confidence, notes)
 CONNECTIONS = [
-    # Extortion case
+    # ── Extortion case
     ("Ravi Kumar",     "+91-96xxxx1111", "CALLED", 0.95, "Threat calls — FIR ref"),
     ("Suresh Nair",    "+91-96xxxx1111", "OWNS",   1.00, "Registered owner"),
 
-    # The Dubai hub
+    # ── The Dubai hub
     ("Arun Mehta",     "+91-99xxxx4444", "OWNS",   1.00, "Registered owner"),
     ("Vikram Singh",   "+91-99xxxx4444", "CALLED", 0.90, "Weekly coordination"),
     ("Priya Sharma",   "+91-99xxxx4444", "CALLED", 0.90, "Weekly coordination"),
     ("+91-95xxxx3333", "+91-99xxxx4444", "CALLED", 0.85, "Hidden link"),
 
-    # Mumbai cluster
-    ("Vikram Singh",   "+91-98xxxx5555", "OWNS",   1.00, ""),
-    ("Suresh Nair",    "+91-98xxxx5555", "CALLED", 0.85, "Daily"),
-    ("Vikram Singh",   "Mumbai Warehouse", "LIVES_AT", 0.90, ""),
+    # ── Mumbai cluster
+    ("Vikram Singh",   "+91-98xxxx5555",  "OWNS",            1.00, ""),
+    ("Suresh Nair",    "+91-98xxxx5555",  "CALLED",          0.85, "Daily"),
+    ("Vikram Singh",   "Mumbai Warehouse", "LIVES_AT",        0.90, ""),
     ("Suresh Nair",    "Mumbai Warehouse", "ASSOCIATED_WITH", 0.85, ""),
 
-    # Kochi cluster
-    ("Rahul Verma",    "+91-98xxxx5555", "CALLED", 0.80, "Weekly"),
-    ("Rahul Verma",    "Kochi Port",     "LIVES_AT", 0.90, ""),
+    # ── Kochi cluster
+    ("Rahul Verma",    "+91-98xxxx5555", "CALLED",          0.80, "Weekly"),
+    ("Rahul Verma",    "Kochi Port",     "LIVES_AT",        0.90, ""),
     ("Deepak Joshi",   "Kochi Port",     "ASSOCIATED_WITH", 0.70, "Informer sighting"),
 
-    # Gurgaon cluster
-    ("Priya Sharma",   "+91-97xxxx2222", "OWNS",   1.00, ""),
+    # ── Gurgaon cluster
+    ("Priya Sharma",   "+91-97xxxx2222", "OWNS",     1.00, ""),
     ("Priya Sharma",   "Gurgaon Center", "LIVES_AT", 0.90, ""),
     ("Suresh Nair",    "Gurgaon Center", "MET_WITH", 0.80, "Seen together"),
-    ("Neha Gupta",     "+91-97xxxx2222", "CALLED", 0.75, "Victim's report"),
+    ("Neha Gupta",     "+91-97xxxx2222", "CALLED",   0.75, "Victim's report"),
 
-    # Hidden financer
-    ("Karan Malhotra", "+91-95xxxx3333", "OWNS",   1.00, ""),
+    # ── Hidden financer
+    ("Karan Malhotra", "+91-95xxxx3333", "OWNS",     1.00, ""),
     ("Karan Malhotra", "Delhi Office",   "LIVES_AT", 0.85, ""),
 
-    # Goa meeting
+    # ── Goa meeting
     ("Vikram Singh",   "Goa Resort",     "MET_WITH", 0.85, "Same week"),
     ("Rahul Verma",    "Goa Resort",     "MET_WITH", 0.85, "Same week"),
 
-    # Financial circular flow
+    # ── Financial circular flow
     ("HDFC A/c 1234",  "SBI A/c 5678",   "TRANSFERRED_TO", 0.95, "Rs 25L"),
     ("SBI A/c 5678",   "ICICI A/c 9012", "TRANSFERRED_TO", 0.95, "Rs 15L"),
     ("ICICI A/c 9012", "HDFC A/c 1234",  "TRANSFERRED_TO", 0.95, "Rs 10L"),
-    ("Anita Desai",    "SBI A/c 5678",   "OWNS",   1.00, "Director"),
-    ("Anita Desai",    "Delhi Office",   "LIVES_AT", 0.90, ""),
+    ("Anita Desai",    "SBI A/c 5678",   "OWNS",           1.00, "Director"),
+    ("Anita Desai",    "Delhi Office",   "LIVES_AT",       0.90, ""),
 
-    # Loose ties (fuel for suggest-links)
+    # ── Cash courier (physical leg)
+    ("Salim Sheikh",   "Goa Resort",     "MET_WITH", 0.80, "Same week"),
+    ("Salim Sheikh",   "+91-98xxxx5555", "CALLED",   0.75, "Burner check-ins"),
+
+    # ── Offshore exit
+    ("ICICI A/c 9012", "Emirates NBD A/c 4455", "TRANSFERRED_TO", 0.70, "Rs 8L tranche"),
+    ("Arun Mehta",     "Emirates NBD A/c 4455", "OWNS",           0.65, "Beneficial owner (unverified)"),
+
+    # ── CCTV corroboration
+    ("CCTV log — Goa Resort", "Vikram Singh", "ASSOCIATED_WITH", 0.90, "Face match"),
+    ("CCTV log — Goa Resort", "Rahul Verma",  "ASSOCIATED_WITH", 0.90, "Face match"),
+
+    # ── Loose ties (fuel for suggest-links)
     ("Vikram Singh",   "Priya Sharma",   "ASSOCIATED_WITH", 0.60, "Seen at airport"),
     ("Rahul Verma",    "Deepak Joshi",   "ASSOCIATED_WITH", 0.55, "Same village"),
 ]
