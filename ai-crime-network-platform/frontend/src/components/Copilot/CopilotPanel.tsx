@@ -185,7 +185,7 @@ export function CopilotChat({ mode = 'drawer', onClose }: { mode?: 'drawer' | 'p
           <div className="text-center py-10">
             <div className="w-12 h-12 mx-auto rounded-full bg-surface-3 flex items-center justify-center mb-3"><Bot size={20} className="text-text-secondary" /></div>
             <div className="font-medium text-text-primary text-sm">Start a new conversation</div>
-            <div className="text-xs text-text-muted mt-1">Try: “Summarize case C-2024-018” • “Find links for ENT-001” • “Verify DOC-001”</div>
+            <div className="text-xs text-text-muted mt-1">Try: “Summarize case 11111111-1111-1111-1111-111111111111” • “Find links for ENT-001” • “Verify DOC-001”</div>
           </div>
         )}
         {msgs.map((m) => (

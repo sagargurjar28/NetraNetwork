@@ -77,7 +77,7 @@ export function ConversationList() {
             </div>
           ))}
         </div>
-        <div className="p-3 border-t border-[rgba(255,255,255,0.06)] text-xs text-text-muted">Suggested: “Summarize C-2024-018” • “Links for ENT-001” • “Verify DOC-001”</div>
+        <div className="p-3 border-t border-[rgba(255,255,255,0.06)] text-xs text-text-muted">Suggested: “Summarize 11111111-1111-1111-1111-111111111111” • “Links for ENT-001” • “Verify DOC-001”</div>
       </Card>
 
       <Modal open={!!deleteFor} onClose={() => setDeleteFor(null)} title="Delete conversation?">

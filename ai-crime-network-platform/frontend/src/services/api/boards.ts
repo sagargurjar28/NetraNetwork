@@ -53,6 +53,23 @@ export const boardsApi = {
       connections: data.connections ?? [],
     }
   },
+  getCases: async (): Promise<any[]> => {
+    if (isMock()) {
+      const { mockCases } = await import('@/mocks/fixtures')
+      return mockCases
+    }
+    const { data } = await client.get('/cases/')
+    return (data ?? []).map((c: any) => ({
+      id: c.id,
+      title: c.title,
+      status: c.status ?? 'open',
+      priority: c.priority ?? 'Medium',
+      entities: c.entities ?? 0,
+      officer: c.officer ?? '—',
+      created: c.created_at ? c.created_at.slice(0, 10) : '—',
+      summary: c.description ?? '',
+    }))
+  },
   getBoardByCase: async (caseId: string): Promise<BoardDetail> => {
     if (isMock()) return mockGetBoard('22222222-2222-2222-2222-222222222222')
     const { data: list } = await client.get(`/cases/${caseId}/boards/`)
@@ -112,5 +129,25 @@ export const boardsApi = {
   /** Local-only: no delete-edge endpoint in the backend catalogue. */
   deleteConnection: async (_boardId: string, _connectionId: string): Promise<void> => {
     if (isMock()) { await delay(); if (maybeError(0.05)) throw { message: 'Delete connection failed (mock error)' } }
+  },
+  createCase: async (payload: { title: string; description?: string }) => {
+    const { data } = await client.post('/cases/', {
+      title: payload.title,
+      description: payload.description ?? null,
+      status: 'open',
+    })
+    return data
+  },
+  createBoard: async (caseId: string, name: string) => {
+    const { data } = await client.post('/boards/', {
+      case_id: caseId,
+      name: name,
+      description: null,
+    })
+    return data
+  },
+  getReport: async (caseId: string) => {
+    const { data } = await client.get(`/cases/${caseId}/report/`)
+    return data
   },
 }

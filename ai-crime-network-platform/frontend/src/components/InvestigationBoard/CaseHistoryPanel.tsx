@@ -1,24 +1,49 @@
+import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import { IconButton } from '@/components/ui/IconButton'
 import { useUIStore } from '@/stores/uiStore'
-import { mockCases } from '@/mocks/fixtures'
-import { RefreshCw, ChevronLeft, ChevronRight, FolderOpen } from 'lucide-react'
+import { boardsApi } from '@/services/api/boards'
+import { RefreshCw, ChevronLeft, ChevronRight, FolderOpen, Plus } from 'lucide-react'
 import { toast } from '@/utils/toast'
 import { cn } from '@/utils/cn'
+import { NewCaseDialog } from './NewCaseDialog'
 
 /** Left rail: case history / boards list. Collapses to a ~40px strip. */
 export function CaseHistoryPanel({
   pinCount,
   linkCount,
   onSelectCase,
+  onCaseCreated,
 }: {
   pinCount: number
   linkCount: number
   onSelectCase: (caseId: string) => void
+  onCaseCreated?: (caseId: string, boardId: string) => void
 }) {
   const collapsed = useUIStore((s) => s.boardHistoryCollapsed)
   const setCollapsed = useUIStore((s) => s.setBoardHistoryCollapsed)
+  const [newOpen, setNewOpen] = useState(false)
+  const [cases, setCases] = useState<any[]>([])
+  const [loadingCases, setLoadingCases] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const data = await boardsApi.getCases()
+        if (!cancelled) setCases(data)
+      } catch (err) {
+        console.error('[case-panel] fetch failed', err)
+        if (!cancelled) setCases([])
+      } finally {
+        if (!cancelled) setLoadingCases(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [refreshKey])
   if (collapsed) {
     return (
       <Card className="flex w-[40px] shrink-0 flex-col items-center gap-2 overflow-hidden py-3">
@@ -43,8 +68,17 @@ export function CaseHistoryPanel({
           </IconButton>
         </div>
       </div>
+      <div className="p-3 pb-0">
+        <Button size="sm" variant="secondary" className="w-full" onClick={() => setNewOpen(true)}>
+          <Plus size={14} className="mr-1" /> New Case
+        </Button>
+      </div>
       <div className="flex-1 space-y-2 overflow-auto p-3">
-        {mockCases.map((c) => (
+        {loadingCases
+          ? <div className="p-3 text-xs text-text-muted">Loading cases…</div>
+          : cases.length === 0
+            ? <div className="p-3 text-xs text-text-muted">No cases yet</div>
+            : cases.map((c) => (
           <button
             key={c.id}
             onClick={() => onSelectCase(c.id)}
@@ -62,6 +96,15 @@ export function CaseHistoryPanel({
           </button>
         ))}
       </div>
+      <NewCaseDialog
+        open={newOpen}
+        onClose={() => setNewOpen(false)}
+        onCreated={(caseId, boardId) => {
+          setNewOpen(false)
+          setRefreshKey((k) => k + 1)
+          onCaseCreated?.(caseId, boardId)
+        }}
+      />
     </Card>
   )
 }

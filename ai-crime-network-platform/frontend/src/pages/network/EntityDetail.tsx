@@ -22,7 +22,7 @@ export default function EntityDetail(){
         </Card>
         <div className="col-span-2 space-y-4">
           <Card className="p-4"><h3 className="font-medium text-[#e6edf3] mb-2">Relations</h3><div className="space-y-2">{data.associates.map((a:string)=> <div key={a} className="flex items-center justify-between p-2 rounded-lg bg-[#0b1015] border border-[rgba(255,255,255,0.06)] text-sm text-[#8b98a5] font-mono">{a} <Link to={'/network/entities/'+a} className="text-[#dc2626]">View</Link></div>)} {data.associates.length===0 && <div className="text-xs text-[#5a6672]">No associates</div>}</div></Card>
-          <Card className="p-4"><h3 className="font-medium text-[#e6edf3] mb-2">Timeline</h3><div className="space-y-2 text-sm text-[#8b98a5]"><div>2024-11-02 — Sighted near sector 7</div><div>2024-10-28 — Call with ENT-002 (12 mins)</div><div>2024-09-12 — Linked to case C-2024-018</div></div></Card>
+          <Card className="p-4"><h3 className="font-medium text-[#e6edf3] mb-2">Timeline</h3><div className="space-y-2 text-sm text-[#8b98a5]"><div>2024-11-02 — Sighted near sector 7</div><div>2024-10-28 — Call with ENT-002 (12 mins)</div><div>2024-09-12 — Linked to case 11111111-1111-1111-1111-111111111111</div></div></Card>
           <Card className="p-4"><h3 className="font-medium text-[#e6edf3] mb-2">Linked Documents & Cases</h3><div className="text-sm text-[#8b98a5]">Cases: {data.cases.join(', ')} • <Link to="/documents/library" className="text-[#dc2626]">View documents</Link></div></Card>
         </div>
       </div>

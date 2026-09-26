@@ -41,7 +41,7 @@ function Block({ text, citations, onCite }: { text: string; citations: Citation[
 }
 
 function inline(s: string, citations: Citation[], onCite?: (c: Citation) => void): React.ReactNode[] {
-  // citations [DOC-001], [ENT-001], [C-2024-018] + **bold** + `code`
+  // citations [DOC-001], [ENT-001], [11111111-1111-1111-1111-111111111111] + **bold** + `code`
   const re = /(\[((?:DOC|ENT)-[0-9A-Za-z-]+|C-[0-9-]+)\])|(\*\*(.+?)\*\*)|(`(.+?)`)/g
   const out: React.ReactNode[] = []
   let last = 0, m: RegExpExecArray | null, k = 0

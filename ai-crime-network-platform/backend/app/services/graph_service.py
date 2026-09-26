@@ -1,5 +1,6 @@
-from typing import Any
+from typing import Any, Optional
 from uuid import UUID
+import json
 
 from app.core.config import get_neo4j_driver
 
@@ -68,25 +69,28 @@ def delete_board(board_id: UUID | str) -> None:
 
 
 def sync_pin(
-    pin_id: UUID | str,
-    board_id: UUID | str,
+    pin_id: UUID,
+    board_id: UUID,
     entity_type: str,
-    entity_id: UUID | str | None,
+    entity_id: Optional[UUID],
     label: str,
-    content: dict[str, Any] | None,
+    content: Optional[dict],
 ) -> None:
-    node_label: str = _label_for(entity_type)
+    node_label = _label_for(entity_type)
     _run(
-        f"MERGE (n:{node_label} {{id: $pin_id}}) "
-        "SET n.label = $label, n.entity_id = $entity_id, n.content = $content "
-        "WITH n "
-        "MERGE (b:Board {id: $board_id}) "
-        "MERGE (b)-[:HAS_PIN]->(n)",
-        pin_id=str(pin_id),
+        f"""
+        MERGE (b:Board {{id: $board_id}})
+        MERGE (n:{node_label} {{id: $pin_id}})
+        SET n.label = $label,
+            n.entity_id = $entity_id,
+            n.content = $content
+        MERGE (b)-[:HAS_PIN]->(n)
+        """,
         board_id=str(board_id),
+        pin_id=str(pin_id),
+        entity_id=str(entity_id) if entity_id else None,
         label=label,
-        entity_id=str(entity_id) if entity_id is not None else None,
-        content=content,
+        content=json.dumps(content) if content else None,
     )
 
 

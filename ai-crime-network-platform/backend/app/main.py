@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import admin, auth, boards, cases, copilot, documents, graph, network
+from app.api import admin, auth, boards, cases, copilot, documents, graph, network, reports
 from app.core.config import Base, close_neo4j_driver, engine, get_neo4j_driver
 from app.models import audit as audit_models
 from app.models import board as board_models
@@ -53,3 +53,4 @@ app.include_router(copilot.router)
 app.include_router(graph.router)
 app.include_router(network.router)
 app.include_router(admin.router)
+app.include_router(reports.router)

@@ -13,7 +13,7 @@ import {
   type Connection,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { toPng } from 'html-to-image'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
@@ -78,7 +78,11 @@ class BoardErrorBoundary extends React.Component<{ children: React.ReactNode }, 
 
 function BoardCanvas() {
   const params = useParams()
-  const boardId = (params as { boardId?: string }).boardId || DEFAULT_BOARD
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const routeBoardId = (params as { boardId?: string }).boardId
+  const queryBoardId = searchParams.get('boardId')
+  const boardId = routeBoardId || queryBoardId || DEFAULT_BOARD
   const [nodes, setNodes, onNodesChange] = useNodesState<RFNode>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<RFEdge>([])
   const [loading, setLoading] = useState(true)
@@ -313,7 +317,12 @@ function BoardCanvas() {
 
   return (
     <div className="flex h-[calc(100vh-96px)] gap-3">
-      <CaseHistoryPanel pinCount={nodes.length} linkCount={edges.length} onSelectCase={selectCase} />
+      <CaseHistoryPanel
+        pinCount={nodes.length}
+        linkCount={edges.length}
+        onSelectCase={selectCase}
+        onCaseCreated={(caseId, newBoardId) => navigate(`/network/graph?caseId=${caseId}&boardId=${newBoardId}`)}
+      />
 
       {/* canvas */}
       <Card className="relative flex-1 overflow-hidden bg-base">

@@ -59,7 +59,7 @@ export function mockCopilotStream(opts: {
   const { conversationId, messageId, prompt, onStart, onToken, onCitation, onEnd } = opts
   const signal = opts.signal || { aborted: false }
   const body =
-    'Analyzing **' + prompt.slice(0, 120) + '** (' + opts.domain + ').\n\nThe network shows 3 high-risk clusters. See [DOC-001] and [ENT-001] for case C-2024-018.\n\n| Entity | Risk | Links |\n|---|---|---|\n| Vikram S | High | 12 |\n| Anita R | Medium | 7 |\n\nRecommendation: flag **C-2024-018** for priority review.'
+    'Analyzing **' + prompt.slice(0, 120) + '** (' + opts.domain + ').\n\nThe network shows 3 high-risk clusters. See [DOC-001] and [ENT-001] for case 11111111-1111-1111-1111-111111111111.\n\n| Entity | Risk | Links |\n|---|---|---|\n| Vikram S | High | 12 |\n| Anita R | Medium | 7 |\n\nRecommendation: flag **11111111-1111-1111-1111-111111111111** for priority review.'
   const tokens: string[] = []
   for (let i = 0; i < body.length; i += 4) tokens.push(body.slice(i, i + 4))
   let idx = 0
@@ -75,7 +75,7 @@ export function mockCopilotStream(opts: {
       try { getSocket().emit(COPILOT_EVENTS.TOKEN, { conversationId, messageId, token }) } catch {}
       // mid-stream citation
       if (idx === Math.floor(tokens.length / 2)) {
-        const citation: MockCitation = { id: 'DOC-001', type: 'document', refId: 'DOC-001', title: 'FIR 2024-112', excerpt: 'Seizure memo links ENT-001 to case C-2024-018 via financial trail.' }
+        const citation: MockCitation = { id: 'DOC-001', type: 'document', refId: 'DOC-001', title: 'FIR 2024-112', excerpt: 'Seizure memo links ENT-001 to case 11111111-1111-1111-1111-111111111111 via financial trail.' }
         onCitation?.({ conversationId, messageId, citation })
         try { getSocket().emit(COPILOT_EVENTS.CITATION, { conversationId, messageId, citation }) } catch {}
         const c2: MockCitation = { id: 'ENT-001', type: 'entity', refId: 'ENT-001', title: 'Vikram Singh', excerpt: 'High-risk entity, 12 links, 2 cases.' }

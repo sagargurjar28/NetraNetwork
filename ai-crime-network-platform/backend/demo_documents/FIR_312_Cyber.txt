@@ -1,0 +1,28 @@
+FIRST INFORMATION REPORT
+FIR No: 312/2025
+Police Station: Cyber Cell, Gurgaon
+Date: 22 September 2025
+
+Complainant: Neha Gupta, resident of Pune.
+
+Facts: Between 15 August and 10 September 2025, the complainant received calls
+from +91-97xxxx2222. Callers posed as officials from a foreign embassy, claiming
+the complainant's son was in legal trouble abroad and demanding immediate
+payment. The complainant transferred Rs 8,00,000 in four instalments to
+bank accounts provided by the callers.
+
+Technical analysis traces +91-97xxxx2222 to a call center operating from
+Gurgaon Center. The center is registered to Priya Sharma. Call records show
+47 simultaneous lines and outbound volume exceeding 12,000 calls per day.
+
+Further analysis shows +91-97xxxx2222 placed repeated calls to +91-99xxxx4444
+(a UAE number) during the same period, believed to be operational coordination.
+
+Investigation revealed Priya Sharma was seen meeting Suresh Nair at the
+Gurgaon Center on 5 September 2025. Both are known associates of Vikram Singh.
+
+Neha Gupta's funds were transferred through ICICI A/c 9012 into a chain of
+accounts, ultimately routing to HDFC A/c 1234. The pattern is consistent with
+layered money laundering.
+
+Cyber Cell requests assistance from EOW for financial trail analysis.
